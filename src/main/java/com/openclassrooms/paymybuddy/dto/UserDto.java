@@ -1,11 +1,9 @@
 package com.openclassrooms.paymybuddy.dto;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 public class UserDto implements Serializable {
 
@@ -19,19 +17,6 @@ public class UserDto implements Serializable {
     private String password;
 
 
-    private BigDecimal balance;
-
-
-
-
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
 
 
 
@@ -50,6 +35,15 @@ public class UserDto implements Serializable {
     }
 
     public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    public UserDto() {
+    }
+
+    public UserDto(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 }

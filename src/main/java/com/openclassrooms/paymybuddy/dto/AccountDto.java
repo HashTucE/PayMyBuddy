@@ -26,4 +26,13 @@ public class AccountDto {
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
+
+
+    public AccountDto() {
+    }
+
+    public AccountDto(String bankName, String accountNumber) {
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+    }
 }

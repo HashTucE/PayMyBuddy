@@ -46,9 +46,9 @@ public class AccountService {
         User loggedUser = userService.getPrincipal();
 
         try {
-        loggedUser.setBankName(null);
-        loggedUser.setAccountNumber(null);
-        userService.save(loggedUser);
+            loggedUser.setBankName(null);
+            loggedUser.setAccountNumber(null);
+            userService.save(loggedUser);
             log.info("Bank account successfully deleted for " + loggedUser);
         } catch (Exception ex){
             log.error("An exception prevents deleting a bank account for " + loggedUser);

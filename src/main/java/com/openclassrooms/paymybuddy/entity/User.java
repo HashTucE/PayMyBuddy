@@ -77,6 +77,12 @@ public class User implements UserDetails {
         this.balance = balance;
     }
 
+    public User(String email, String password, String bankName, String accountNumber) {
+        this.email = email;
+        this.password = password;
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+    }
 
     public int getUserId() {
         return userId;
