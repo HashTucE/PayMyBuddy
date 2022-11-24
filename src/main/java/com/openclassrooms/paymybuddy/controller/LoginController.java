@@ -3,8 +3,9 @@ package com.openclassrooms.paymybuddy.controller;
 import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,9 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    private AuthenticationManager authenticationManager;
 
 
+    private static final Logger log = LogManager.getLogger(LoginController.class);
 
 
 

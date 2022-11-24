@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Transfer</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <style>
+    /* override bootstrap styles */
+    thead {
+    background-color: #72bb59;
+    }
+
+    button {
+    background-color:#72bb59 !important;
+    border-color:#72bb59 !important;
+    color:white !important;
+    }
+    </style>
+</head>
+
+<body>
+
+  <!--Navbar-->
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+
+  <!--Nav Path-->
+  <nav class="container-fluid bg-light">
+      <ul class="navbar-nav d-flex flex-row">
+        <li class="nav-item"><a class="nav-link" th:href="@{/home}">Home&nbsp;&nbsp;&nbsp;/</a></li>
+      <li class="nav-item"><a class="nav-link disabled">&nbsp;&nbsp;&nbsp;Transfer</a></li>
+    </ul>
+  </nav>
+
+<main class="container pt-5">
+
+  <!--Alert message-->
+<!--  <div th:if="${success}"-->
+<!--       class="alert alert-success" role="alert">-->
+<!--    <h5 class="alert-heading">Successful</h5>-->
+<!--    <p th:text="${success}">Success message!-->
+<!--  </div>-->
+
+<!--  <div th:if="${error}"-->
+<!--       class="alert alert-danger" role="alert">-->
+<!--    <h5 class="alert-heading">An error occurred</h5>-->
+<!--    <p th:text="${error}">Error message.-->
+<!--  </div>-->
+
+
+
+
+  <!--Bank to Wallet-->
+  <div class="row align-items-end mb-2">
+      <div class="col-auto me-auto"><h5>Bank to Wallet</h5></div>
+  </div>
+
+    <!--amount and receive BTN-->
+    <div class="container bg-light p-5">
+        <form class="row align-items-center" th:action="@{/transfer/fromBank}" method="post" th:object="${bankDto}">
+            <div class="d-grid col input-group">
+                <input type="number" min="1" step="0.01" placeholder="0 €" required th:field="*{amount}">
+            </div>
+            <div class="d-grid col-4 mx-auto">
+                <input class="btn btn-primary" type="submit" value="Receive">
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+    <!--Wallet to Bank-->
+    <div class="row align-items-end mb-2 mt-5">
+        <div class="col-auto me-auto"><h5>Wallet to Bank</h5></div>
+    </div>
+
+    <!--amount and Pay BTN-->
+    <div class="container bg-light p-5">
+        <form class="row align-items-center" th:action="@{/transfer/toBank}" method="post" th:object="${bankDto}">
+            <div class="d-grid col input-group">
+                <input type="number" min="1" step="0.01" placeholder="0 €" required th:field="*{amount}">
+            </div>
+            <div class="d-grid col-4 mx-auto">
+                <input class="btn btn-primary" type="submit" value="Send">
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+    <!--Wallet to Buddy-->
+    <div class="row align-items-end mb-2 mt-5">
+        <div class="col-auto me-auto"><h5>Wallet to Buddy</h5></div>
+    </div>
+
+    <!--Select connection, amount and Pay BTN-->
+    <div class="container bg-light position-relative p-5">
+        <form class="row align-items-center" th:action="@{/transfer/toBuddy}" method="post" th:object="${transactionDto}">
+
+            <div class="row align-items-center">
+                <div class="d-grid col input-group">
+                    <label>
+                        <select class="form-select" required th:field="*{email}">
+                            <option value="">Select a contact</option>
+                            <option th:each="contact: ${contacts}"
+                                    th:value="${contact.email}"
+                                    th:text="${contact.email}"></option>
+                        </select>
+                    </label>
+                </div>
+                <div class="d-grid col input-group">
+                    <input type="number" min="1" step="0.01" placeholder="0 €" required th:field="*{amount}">
+                </div>
+                <div class="form-group py-3">
+                    <input type="text"  class="form-control text-center" required th:field="*{description}" placeholder="Description"/>
+                </div>
+            </div>
+
+            <div class="row justify-content-md-center">
+                <div class="d-grid col-4 mx-auto">
+                    <button class="btn btn-primary" type="submit">Pay</button>
+                </div>
+            </div>
+        </form>
+        <a class="btn btn-secondary position-absolute bottom-0 end-0">My balance : <span th:text ="${balance}"></span>€</a>
+    </div>
+
+
+
+
+
+  <!--My Transactions-->
+  <div class="col mt-5" id="my-transactions">
+    <h5 id="transactions-title">My transactions</h5>
+    <table class="table table-striped ">
+      <thead>
+        <tr class="text-white">
+          <th class="text-center py-3">Email</th>
+          <th class="text-center py-3">Description</th>
+          <th class="text-center py-3">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+<!--      <tr th:each="transaction : ${transactions}">-->
+<!--        <td class="text-center py-3" th:text="${transaction.beneficiary.email}"></td>-->
+<!--        <td class="text-center py-3" th:text="${transaction.description}"></td>-->
+<!--          <td class="text-center py-3"><span th:text="${transaction.amount}"></span>€</td>-->
+<!--      </tr>-->
+      <tr th:each="transaction : ${transactions}">
+          <td class="text-center py-3" th:text="${transaction.email}"></td>
+          <td class="text-center py-3" th:text="${transaction.description}"></td>
+          <td class="text-center py-3"><span th:text="${transaction.sign}"></span><span th:text="${transaction.amount}"></span>€</td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!--Pagination-->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item"><a class="page-link" href="#">4</a></li>
+      <li class="page-item"><a class="page-link" href="#">5</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+
+
+
+
+</main>
+
+
+
+</body>
+</html>
