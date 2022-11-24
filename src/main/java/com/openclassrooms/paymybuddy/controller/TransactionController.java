@@ -31,7 +31,7 @@ public class TransactionController {
 
 
 
-    private static final Logger log = LogManager.getLogger(ProfileController.class);
+    private static final Logger log = LogManager.getLogger(TransactionController.class);
 
 
 
