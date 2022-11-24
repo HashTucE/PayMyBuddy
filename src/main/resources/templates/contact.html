@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Contact</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+    <!--Navbar-->
+    <div th:replace="~{fragments/navigation :: navigation}"></div>
+
+
+    <!--Nav Path-->
+    <nav class="container-fluid bg-light">
+        <ul class="navbar-nav d-flex flex-row">
+            <li class="nav-item"><a class="nav-link" th:href="@{/home}">Home&nbsp;&nbsp;&nbsp;/</a></li>
+            <li class="nav-item"><a class="nav-link disabled">&nbsp;&nbsp;&nbsp;Contact</a></li>
+        </ul>
+    </nav>
+
+
+    <!--Title-->
+    <h2 class="text-center my-4">Contact us</h2>
+    <!--Intro-->
+    <p class="text-center w-responsive mx-auto mb-5">Do you have any questions? Please do not hesitate to contact us directly. Our team will come back to you within
+        a matter of hours to help you.</p>
+
+    <div class="row justify-content-center">
+
+        <div class="col-4">
+            <form id="contact-form" name="contact-form" action="mail.php" method="POST">
+
+                <!--Email-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form mb-0">
+                            <label for="email" class="">Your email</label>
+                            <input type="text" id="email" name="email" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!--Subject-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form mb-0">
+                            <label for="subject" class="">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!--Message-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form">
+                            <label for="message">Your message</label>
+                            <textarea type="text" id="message" name="message" rows="2" class="form-control md-textarea"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+            <!--Send BTN-->
+            <div class="text-center text-md-left pt-5">
+                <a class="btn btn-primary" onclick="document.getElementById('contact-form').submit();">Send</a>
+            </div>
+            <div class="status"></div>
+        </div>
+
+        <!--Info-->
+        <div class="col-4 text-center">
+            <ul class="list-unstyled mb-0">
+                <li><img th:src="@{/img/location.svg}" width=auto height=45>
+                    <p>San Buddy, Paying St, USA</p>
+                </li>
+
+                <li><img th:src="@{/img/phone.png}" width=auto height=45>
+                    <p>+ 99 234 567 789</p>
+                </li>
+
+                <li><img th:src="@{/img/mail.png}" width=auto height=45>
+                    <p>contact@paymybuddy.com</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <div class="container text-center mt-5">
+        <img th:src="@{/img/banner.png}" class="img-fluid">
+    </div>
+</footer>
+</html>
