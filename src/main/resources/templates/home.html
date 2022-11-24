@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <style>
+    /* override bootstrap styles */
+    thead {
+       background-color: #72bb59;
+    }
+    </style>
+  </head>
+
+  <body>
+
+  <!--Navbar-->
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+
+    <!--Nav Path-->
+    <nav class="container-fluid bg-light">
+      <ul class="navbar-nav d-flex flex-row">
+        <li class="nav-item"><a class="nav-link disabled">Home&nbsp;&nbsp;&nbsp;/</a></li>
+      </ul>
+    </nav>
+
+
+    <!--My Wallet-->
+  <div class="container mt-5">
+    <div class="col-auto me-auto"><h5>Wallet</h5></div>
+    <table class="table table-striped">
+      <thead>
+        <tr class="text-white">
+          <th class="text-center py-3">Email</th>
+          <th class="text-center py-3">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-center py-3">
+            <span th:text="${principal}"></span>
+          </td>
+          <td class="text-center py-3">
+            <span th:text ="${balance}"></span>€
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <!--Active Account-->
+  <div class="container mt-5">
+    <div class="col-auto me-auto"><h5>Bank Account</h5></div>
+    <table class="table table-striped">
+      <thead>
+        <tr class="text-white">
+          <th class="text-center py-3">Bank Name</th>
+          <th class="text-center py-3">Iban</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-center py-3">
+            <span th:text="${bankName}"></span>
+          </td>
+          <td class="text-center py-3">
+            <span th:text="${accountNumber}"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+    <!--Last Transaction-->
+    <div class="container mt-5">
+      <div class="col-auto me-auto"><h5>Last Transaction</h5></div>
+      <table class="table table-striped">
+        <thead>
+          <tr class="text-white">
+            <th class="text-center py-3">Email</th>
+            <th class="text-center py-3">Description</th>
+            <th class="text-center py-3">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transaction, tranStat : ${transactions}" th:if="${tranStat.index >= tranStat.size-1}">
+          <td class="text-center py-3" th:text="${transaction.beneficiary.email}"></td>
+          <td class="text-center py-3" th:text="${transaction.description}"></td>
+          <td class="text-center py-3"><span th:text="${transaction.amount}"></span>€</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
