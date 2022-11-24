@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Register</title>
+        <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+        <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="row col-md-6 offset-md-3 mt-5">
+
+                    <!--Alert message-->
+    <!--            <div th:if="${param.success}">-->
+    <!--                <div class="alert alert-info">-->
+    <!--                    You have successfully registered our app!-->
+    <!--                </div>-->
+    <!--            </div>-->
+
+                <div class="card mt-4">
+                    <div class="form-group mb-3">
+
+                        <!--Logo-->
+                        <div class="col text-center mt-4">
+                            <img th:src="@{/img/logo.png}" width=auto height=45px>
+                        </div>
+                        <div class="card-body mt-3">
+
+
+                        <form action="#" th:action="@{/register}" th:object="${userDto}" method="post">
+                           <!-- <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                            </div>-->
+
+
+                            <div class="input-group mb-3">
+                                <input type="email" class="form-control" th:field="*{email}" placeholder="&#9993;  Enter Email" required>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" th:field="*{password}" placeholder="&#10033;  Enter Password" required>
+                            </div>
+
+                            <div class="col text-center">
+                                <button class="btn btn-primary" type="submit">Register</button>
+                            </div>
+                            <div class="col text-center">
+                                <a th:href="@{/login}">Already registered?</a>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
