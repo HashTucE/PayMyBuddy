@@ -31,6 +31,21 @@ public class Transaction {
     private String description;
 
 
+    public Transaction() {
+    }
+
+    public Transaction(User sender, User beneficiary) {
+        this.sender = sender;
+        this.beneficiary = beneficiary;
+    }
+
+    public Transaction(User sender, User beneficiary, BigDecimal amount, String description) {
+        this.sender = sender;
+        this.beneficiary = beneficiary;
+        this.amount = amount;
+        this.description = description;
+    }
+
     public int getTransactionId() {
         return transactionId;
     }

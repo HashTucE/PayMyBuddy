@@ -28,6 +28,16 @@ public class TransactionDto {
     private String sign;
 
 
+    public TransactionDto() {
+    }
+
+    public TransactionDto(String email, BigDecimal amount, String description, String sign) {
+        this.email = email;
+        this.amount = amount;
+        this.description = description;
+        this.sign = sign;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -71,6 +81,6 @@ public class TransactionDto {
 
     @Override
     public String toString() {
-        return this.date + " + " + this.description + " + " + this.amount + "dto";
+        return this.date + " + " + this.description + " + " + this.amount;
     }
 }

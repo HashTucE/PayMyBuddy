@@ -69,7 +69,7 @@ public class TransactionService {
         BigDecimal amountTaxIncl = getFinalAmount(amount);
         BigDecimal tax = amountTaxIncl.subtract(amount);
 
-            if (loggedUser.getBalance().compareTo(amountTaxIncl) > 0) {
+            if (loggedUser.getBalance().compareTo(amountTaxIncl) >= 0) {
 
                 loggedUser.setBalance(loggedUser.getBalance().subtract(amountTaxIncl));
                 userRepository.save(loggedUser);
@@ -190,7 +190,7 @@ public class TransactionService {
         User loggedUser = userService.getPrincipal();
         boolean beneficiary = loggedUser.getEmail().equals(transaction.getBeneficiary().getEmail());
 
-        log.info("Determines if " + loggedUser.getEmail() + " is the beneficiary of the transaction");
+        log.info(loggedUser.getEmail() + " is the beneficiary of the transaction ? " + beneficiary);
         return beneficiary;
     }
 

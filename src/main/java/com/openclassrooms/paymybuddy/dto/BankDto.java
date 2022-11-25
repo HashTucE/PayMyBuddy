@@ -12,10 +12,6 @@ public class BankDto {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     public BankDto(BigDecimal amount) {
         this.amount = amount;
     }

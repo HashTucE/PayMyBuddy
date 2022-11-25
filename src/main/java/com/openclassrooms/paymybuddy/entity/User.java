@@ -71,6 +71,12 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public User(int userId, String email, String password) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+    }
+
     public User(String email, String password, BigDecimal balance) {
         this.email = email;
         this.password = password;
@@ -82,6 +88,20 @@ public class User implements UserDetails {
         this.password = password;
         this.bankName = bankName;
         this.accountNumber = accountNumber;
+    }
+
+    public User(String email, String password, BigDecimal balance, String bankName, String accountNumber) {
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+    }
+
+    public User(String email, List<Transaction> debitList, List<Transaction> creditList) {
+        this.email = email;
+        this.debitList = debitList;
+        this.creditList = creditList;
     }
 
     public int getUserId() {
