@@ -20,12 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -149,6 +143,38 @@ class TransactionServiceTest {
 
 
     @Test
+    @DisplayName("Should throw exception when only bank name is set")
+    void depositNegativeTest2() {
+
+        //given
+        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), "name", " ");
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+
+        //then
+        assertThrows(NoBankAccountException.class, () -> transactionService.deposit(bankDto));
+    }
+
+
+    @Test
+    @DisplayName("Should throw exception when only account number is set")
+    void depositNegativeTest3() {
+
+        //given
+        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", "FR12");
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+
+        //then
+        assertThrows(NoBankAccountException.class, () -> transactionService.deposit(bankDto));
+    }
+
+
+    @Test
     @DisplayName("Should subtract money to wallet")
     void withdrawPositiveTest() {
 
@@ -180,6 +206,54 @@ class TransactionServiceTest {
 
         //then
         assertThrows(NoBankAccountException.class, () -> transactionService.withdraw(bankDto));
+    }
+
+
+    @Test
+    @DisplayName("Should throw exception when only bank name is set")
+    void withdrawNegativeTest2() {
+
+        //given
+        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), "name", " ");
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+
+        //then
+        assertThrows(NoBankAccountException.class, () -> transactionService.withdraw(bankDto));
+    }
+
+
+    @Test
+    @DisplayName("Should throw exception when only account number is set")
+    void withdrawNegativeTest3() {
+
+        //given
+        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", "FR12");
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+
+        //then
+        assertThrows(NoBankAccountException.class, () -> transactionService.withdraw(bankDto));
+    }
+
+
+    @Test
+    @DisplayName("Should throw exception when withdraw is superior than balance")
+    void withdrawPositiveTest4() {
+
+        //given
+        BankDto bankDto = new BankDto(BigDecimal.valueOf(1000));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(100), "name", "number");
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+
+        //then
+        assertThrows(InsufficientFundException.class, () -> transactionService.withdraw(bankDto));
     }
 
 

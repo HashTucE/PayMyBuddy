@@ -126,8 +126,7 @@ public class TransactionService {
         BigDecimal roundedAmount = bankDto.getAmount().setScale(2, RoundingMode.HALF_DOWN);
         User loggedUser = userService.getPrincipal();
 
-        if(loggedUser.getBankName() != null && !loggedUser.getBankName().isEmpty()
-        && loggedUser.getAccountNumber() != null && !loggedUser.getAccountNumber().isEmpty()) {
+        if(!loggedUser.getBankName().isBlank() && !loggedUser.getAccountNumber().isBlank()) {
             loggedUser.setBalance(loggedUser.getBalance().add(roundedAmount));
             userRepository.save(loggedUser);
             log.info(roundedAmount + " was added to the wallet of " + loggedUser);
@@ -148,14 +147,14 @@ public class TransactionService {
         BigDecimal roundedAmount = bankDto.getAmount().setScale(2, RoundingMode.HALF_DOWN);
         User loggedUser = userService.getPrincipal();
 
-        if(loggedUser.getBankName() != null && !loggedUser.getBankName().isEmpty()
-        && loggedUser.getAccountNumber() != null && !loggedUser.getAccountNumber().isEmpty()) {
+
+        if (loggedUser.getBalance().compareTo(bankDto.getAmount()) < 0) {
+            log.error("Fund insufficient for " + loggedUser.getEmail());
+            throw new InsufficientFundException("Fund insufficient for " + loggedUser.getEmail());
+        } else if(!loggedUser.getBankName().isBlank() && !loggedUser.getAccountNumber().isBlank()) {
             loggedUser.setBalance(loggedUser.getBalance().subtract(roundedAmount));
             userRepository.save(loggedUser);
             log.info(roundedAmount + " was sent to the bank account of " + loggedUser);
-        } else if (loggedUser.getBalance().compareTo(bankDto.getAmount()) < 0) {
-            log.error("Fund insufficient for " + loggedUser.getEmail());
-            throw new InsufficientFundException("Fund insufficient for " + loggedUser.getEmail());
         } else {
             log.error("Bank account not set for " + loggedUser.getEmail());
             throw new NoBankAccountException("Bank account not set for " + loggedUser.getEmail());
