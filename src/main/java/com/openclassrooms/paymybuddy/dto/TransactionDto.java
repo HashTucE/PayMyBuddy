@@ -24,6 +24,8 @@ public class TransactionDto {
     @NotEmpty(message = "Description should not be empty")
     private String description;
 
+
+
     @NotNull
     private String sign;
 
@@ -31,11 +33,10 @@ public class TransactionDto {
     public TransactionDto() {
     }
 
-    public TransactionDto(String email, BigDecimal amount, String description, String sign) {
+    public TransactionDto(String email, BigDecimal amount, String description) {
         this.email = email;
         this.amount = amount;
         this.description = description;
-        this.sign = sign;
     }
 
     public String getEmail() {
@@ -70,12 +71,12 @@ public class TransactionDto {
         this.description = description;
     }
 
-    public String getSign() {
-        return sign;
-    }
-
     public void setSign(String sign) {
         this.sign = sign;
+    }
+
+    public String getSign() {
+        return sign;
     }
 
 

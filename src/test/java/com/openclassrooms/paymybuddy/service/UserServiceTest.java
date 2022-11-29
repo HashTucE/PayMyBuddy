@@ -148,5 +148,21 @@ class UserServiceTest {
 
 
 
+//    @Test
+//    @DisplayName("Should return the logged user")
+//    void getPrincipalPositiveTest() {
+//
+//        //given
+//        User user = new User("test@test.fr", "pass");
+//
+//        //when
+//        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(any(Object.class));
+//        when(userService.findByEmail(anyString())).thenReturn(user);
+//        User principal = userService.getPrincipal();
+//
+//        //then
+//        assertEquals(user.getEmail(), principal.getEmail());
+//    }
+
 
 }

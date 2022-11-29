@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.awt.*;
-import java.util.Set;
-
 @Controller
 public class ProfileController {
 
@@ -56,30 +53,40 @@ public class ProfileController {
         model.addAttribute("bankName", loggedUser.getBankName());
         model.addAttribute("accountNumber", loggedUser.getAccountNumber());
         model.addAttribute("contacts", loggedUser.getContacts());
+
+        log.info("request get into profile controller");
         return "profile";
     }
 
     @PostMapping("/profile/addAccount")
     public String addAccount(@ModelAttribute ("accountDto") AccountDto accountDto) {
         accountService.addBankAccount(accountDto);
+
+        log.info("request post addAccount into profile controller");
         return "redirect:/profile";
     }
 
     @PostMapping("/profile/deleteAccount")
     public String deleteAccount() {
         accountService.deleteBankAccount();
+
+        log.info("request post deleteAccount into profile controller");
         return "redirect:/profile";
     }
 
     @PostMapping("/profile/addContact")
     public String addContact(@ModelAttribute ("contactDto") ContactDto contactDto) {
         contactService.addContact(contactDto);
+
+        log.info("request post addContact into profile controller");
         return "redirect:/profile";
     }
 
     @PostMapping("/profile/deleteContact/{email}")
     public String deleteContact(@PathVariable String email) {
         contactService.deleteContact(email);
+
+        log.info("request post deleteContact into profile controller");
         return "redirect:/profile";
     }
 

@@ -147,36 +147,30 @@
         </tr>
       </thead>
       <tbody>
-<!--      <tr th:each="transaction : ${transactions}">-->
-<!--        <td class="text-center py-3" th:text="${transaction.beneficiary.email}"></td>-->
-<!--        <td class="text-center py-3" th:text="${transaction.description}"></td>-->
-<!--          <td class="text-center py-3"><span th:text="${transaction.amount}"></span>€</td>-->
-<!--      </tr>-->
       <tr th:each="transaction : ${transactions}">
           <td class="text-center py-3" th:text="${transaction.email}"></td>
           <td class="text-center py-3" th:text="${transaction.description}"></td>
           <td class="text-center py-3"><span th:text="${transaction.sign}"></span><span th:text="${transaction.amount}"></span>€</td>
       </tr>
-
       </tbody>
     </table>
   </div>
+
+
+
+
 
   <!--Pagination-->
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
       <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
+        <a class="page-link" th:href="@{/transfer/page/1}" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">4</a></li>
-      <li class="page-item"><a class="page-link" href="#">5</a></li>
+      <li class="page-item" th:each="i: ${pageNumbers}"><a class="page-link" th:href="@{'/transfer/page/' + ${i}}">[[${i}]]</a></li>
       <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
+        <a class="page-link" th:href="@{/transfer/page/{id}(id=${totalPages})}" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
@@ -186,10 +180,6 @@
 
 
 
-
 </main>
-
-
-
 </body>
 </html>

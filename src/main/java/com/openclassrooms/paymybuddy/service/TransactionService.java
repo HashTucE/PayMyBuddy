@@ -11,15 +11,15 @@ import com.openclassrooms.paymybuddy.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -153,6 +153,9 @@ public class TransactionService {
             loggedUser.setBalance(loggedUser.getBalance().subtract(roundedAmount));
             userRepository.save(loggedUser);
             log.info(roundedAmount + " was sent to the bank account of " + loggedUser);
+        } else if (loggedUser.getBalance().compareTo(bankDto.getAmount()) < 0) {
+            log.error("Fund insufficient for " + loggedUser.getEmail());
+            throw new InsufficientFundException("Fund insufficient for " + loggedUser.getEmail());
         } else {
             log.error("Bank account not set for " + loggedUser.getEmail());
             throw new NoBankAccountException("Bank account not set for " + loggedUser.getEmail());
@@ -160,24 +163,6 @@ public class TransactionService {
     }
 
 
-    /**
-     * Merge credit list and debit list into one list
-     * @return the merge transaction list
-     */
-    public List<Transaction> getMergeList() {
-
-
-        User loggedUser = userService.getPrincipal();
-        List<Transaction> debitList = loggedUser.getDebitList();
-        List<Transaction> creditList = loggedUser.getCreditList();
-        List<Transaction> transactionsList = new ArrayList<>();
-
-        transactionsList.addAll(debitList);
-        transactionsList.addAll(creditList);
-        log.info("Credit and debit lists of " + loggedUser.getEmail() + " merged successfully");
-
-        return transactionsList;
-    }
 
 
     /**
@@ -195,51 +180,43 @@ public class TransactionService {
     }
 
 
+
+
     /**
-     * Transform the merge transactions list of the logged user into the appropriate model for the view
-     * @return the custom list
+     * Sort by descending date order the whole transaction list of the logged user in a page
+     * @return page of transactionDto
      */
-    public List<TransactionDto> getCustomList() {
+    public Page<TransactionDto> getPageTransactionDto(int pageNumber) {
 
-        List<TransactionDto> list = new ArrayList<>();
+        User loggedUser = userService.getPrincipal();
+        Pageable sortedByDate = PageRequest.of(pageNumber - 1, 5, Sort.by("date").descending());
+        Page<Transaction> transactionPage = transactionRepository.findAllTransactionsById(loggedUser.getUserId(), sortedByDate);
 
-        try {
-            for (Transaction transaction : getMergeList()) {
-                TransactionDto dto = new TransactionDto();
-                if (isLoggedUserBeneficiary(transaction)) {
-                    dto.setEmail(transaction.getSender().getEmail());
-                } else {
-                    dto.setEmail(transaction.getBeneficiary().getEmail());
-                }
-                dto.setAmount(transaction.getAmount());
-                dto.setDescription(transaction.getDescription());
-                dto.setDate(transaction.getDate());
-                if (isLoggedUserBeneficiary(transaction)) {
-                    dto.setSign("+");
-                } else {
-                    dto.setSign("-");
-                }
-                list.add(dto);
-            }
-        } catch (Exception ex) {
-            log.error("An unexpected exception interrupted the creation of the custom list");
-        }
-        log.info("Custom list created successfully");
-        return list;
+        return transactionPage.map(this::transactionEntityToDto);
     }
 
 
     /**
-     * Sort a TransactionDto list from the date reversed
-     * @param list TransactionDto list
-     * @return TransactionDto list sorted by date reversed
+     * Transform the transaction entity to dto
+     * @param transaction
+     * @return TransactionDto
      */
-    public List<TransactionDto> getSortedList(List<TransactionDto> list) {
-
-        log.info("TransactionDto list sorted by date reversed");
-        return list.stream()
-                .sorted(Comparator.comparing(TransactionDto::getDate).reversed())
-                .collect(Collectors.toList());
+    public TransactionDto transactionEntityToDto(Transaction transaction){
+        TransactionDto dto =  new TransactionDto();
+        if (isLoggedUserBeneficiary(transaction)) {
+                dto.setEmail(transaction.getSender().getEmail());
+            } else {
+                dto.setEmail(transaction.getBeneficiary().getEmail());
+            }
+            dto.setAmount(transaction.getAmount());
+            dto.setDescription(transaction.getDescription());
+            dto.setDate(transaction.getDate());
+            if (isLoggedUserBeneficiary(transaction)) {
+                dto.setSign("+");
+            } else {
+                dto.setSign("-");
+            }
+        return dto;
     }
 
 

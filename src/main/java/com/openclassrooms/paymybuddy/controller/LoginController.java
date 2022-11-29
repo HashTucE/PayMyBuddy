@@ -26,14 +26,12 @@ public class LoginController {
 
 
 
-
-
-
-
     @GetMapping({"/", "/login"})
     public ModelAndView viewlogin(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
+
+        log.info("returning login view");
         return modelAndView;
     }
 
@@ -44,6 +42,8 @@ public class LoginController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("userDto", new UserDto());
         modelAndView.setViewName("register");
+
+        log.info("returning register view");
         return modelAndView;
     }
 
@@ -67,6 +67,7 @@ public class LoginController {
             modelAndView.setViewName("register");
 
         }
+        log.info("request post createNewUser into login controller");
         return modelAndView;
     }
 

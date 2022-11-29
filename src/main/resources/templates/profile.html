@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Profile</title>
+        <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+        <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <style>
+        thead {
+            background-color: #72bb59;
+        }
+        button {
+            background-color:#72bb59 !important;
+            border-color:#72bb59 !important;
+            color:white !important;
+        }
+        </style>
+    </head>
+
+    <body>
+
+        <!--Navbar-->
+        <div th:replace="~{fragments/navigation :: navigation}"></div>
+
+        <!--Nav Path-->
+        <nav class="container-fluid bg-light">
+            <ul class="navbar-nav d-flex flex-row">
+                <li class="nav-item"><a class="nav-link" th:href="@{/home}">Home&nbsp;&nbsp;&nbsp;/</a></li>
+                <li class="nav-item"><a class="nav-link disabled">&nbsp;&nbsp;&nbsp;Profile</a></li>
+            </ul>
+        </nav>
+
+
+
+
+
+        <!--My Credentials-->
+        <div class="container mt-5">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row align-items-end mb-2" id="my-infos">
+                        <div class="col-auto me-auto"><h5>My Credentials</h5></div>
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="text-white">
+                        <th class="text-center py-3">Email</th>
+                        <th class="text-center py-3">Password</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-center py-3"><span th:text="${#authentication.name}"></span></td>
+                        <td class="text-center py-3">*********************</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
+
+        <!--My Accounts-->
+        <div class="container mt-5">
+            <div class="table-wrapper">
+
+                <!--Title My Account-->
+                <div class="row align-items-end mb-2" id="send-money">
+                    <div class="col-auto me-auto"><h5>My Account</h5></div>
+                </div>
+
+                <!--Table My Account-->
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="text-white">
+                        <th class="text-center py-3">Bank Name</th>
+                        <th class="text-center py-3">Iban</th>
+                        <th class="text-center py-3">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-center py-3" th:text="${bankName}"></td>
+                        <td class="text-center py-3" th:text="${accountNumber}"></td>
+                        <td class="text-center py-3">
+                            <form  th:action="@{/profile/deleteAccount}" method="post">
+                                <input class="btn btn-danger" type="submit" value="Del">
+                            </form>
+                        </td>
+                    </tr>
+                    <form  th:action="@{/profile/addAccount}" method="post" th:object="${accountDto}">
+                    <tr>
+                        <td>
+                            <div class="form-group py-3">
+                                <input type="text" th:field="*{bankName}"
+                                       class="form-control text-center" placeholder="Enter Bank Name"/>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group py-3">
+                                <input type="text" th:field="*{accountNumber}"
+                                       class="form-control text-center" placeholder="Enter Iban"/>
+                            </div>
+                        </td>
+                        <td class="text-center py-3">
+                            <input class="btn btn-primary" type="submit" value="Add">
+                        </td>
+                    </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
+
+        <!--My Contacts-->
+        <div class="container mt-5">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row align-items-end mb-2" id="my-contacts">
+                        <div class="col-auto me-auto"><h5>My Contacts</h5></div>
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr class="text-white">
+                        <th class="text-center py-3">Email</th>
+                        <th class="text-center py-3">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="contact: ${contacts}">
+                        <td class="text-center py-3" th:text="${contact.email}"></td>
+                        <td class="text-center py-3">
+                            <form th:action="@{/profile/deleteContact/{email}(email=${contact.email})}" method="post">
+                                <input type="hidden" name="email" th:value="${contact.email}">
+                                <input class="btn btn-danger" type="submit" value="Del">
+                            </form>
+                        </td>
+                    </tr>
+                    <form th:action="@{/profile/addContact}" method="post" th:object="${contactDto}">
+                    <tr>
+                        <td>
+                            <div class="form-group py-3">
+                                <input type="text" th:field="*{email}" class="form-control text-center" placeholder="Email"/>
+                            </div>
+                        </td>
+                        <td class="text-center py-3">
+                            <input class="btn btn-primary" type="submit" value="Add">
+                        </td>
+                    </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
+    </body>
+</html>

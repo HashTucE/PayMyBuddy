@@ -1,18 +1,20 @@
 package com.openclassrooms.paymybuddy.service;
 
 
-
 import com.openclassrooms.paymybuddy.dto.UserDto;
+import com.openclassrooms.paymybuddy.entity.Transaction;
 import com.openclassrooms.paymybuddy.entity.User;
-
 import com.openclassrooms.paymybuddy.exceptions.InvalidEmailException;
 import com.openclassrooms.paymybuddy.exceptions.UserAlreadyExistException;
+import com.openclassrooms.paymybuddy.repository.TransactionRepository;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
-
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,6 +31,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -81,8 +86,9 @@ public class UserService {
      * create a user from his DTO
      *
      * @param userDto userDTO
+     * @return user
      */
-    public void createUser(UserDto userDto) {
+    public User createUser(UserDto userDto) {
 
         String email = userDto.getEmail();
         if (!isValidEmailAddress(email)) {
@@ -102,6 +108,7 @@ public class UserService {
         user.setBalance(BigDecimal.ZERO);
         log.info(userDto.getEmail() + " created");
         userRepository.save(user);
+        return user;
     }
 
 
@@ -126,6 +133,7 @@ public class UserService {
      */
     public User getPrincipal() {
 
+        //SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("toto", "tutu"));
         String username;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -135,6 +143,8 @@ public class UserService {
             username = principal.toString();
         }
         User principalUser = findByEmail(username);
+
+
         log.info(principalUser.getEmail() + " is the user connected");
         return principalUser;
     }
