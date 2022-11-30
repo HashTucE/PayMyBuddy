@@ -2,6 +2,7 @@ package com.openclassrooms.paymybuddy.service;
 
 import com.openclassrooms.paymybuddy.dto.AccountDto;
 import com.openclassrooms.paymybuddy.entity.User;
+import com.openclassrooms.paymybuddy.exceptions.NoBankAccountException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,15 @@ public class AccountService {
 
         User loggedUser = userService.getPrincipal();
 
-        try {
+        if(!accountDto.getBankName().isBlank() && !accountDto.getAccountNumber().isBlank()) {
             loggedUser.setBankName(accountDto.getBankName());
             loggedUser.setAccountNumber(accountDto.getAccountNumber());
             userService.save(loggedUser);
             log.info("Bank account successfully added/updated for " + loggedUser);
-        } catch (Exception ex){
-            log.error("An exception prevents adding a bank account for " + loggedUser);
+        } else {
+            log.error("Bank account not correctly set for " + loggedUser.getEmail());
+            throw new NoBankAccountException("Bank account not correctly set for " + loggedUser.getEmail());
         }
-
     }
 
 
@@ -45,13 +46,10 @@ public class AccountService {
 
         User loggedUser = userService.getPrincipal();
 
-        try {
-            loggedUser.setBankName(null);
-            loggedUser.setAccountNumber(null);
-            userService.save(loggedUser);
-            log.info("Bank account successfully deleted for " + loggedUser);
-        } catch (Exception ex){
-            log.error("An exception prevents deleting a bank account for " + loggedUser);
-        }
+
+        loggedUser.setBankName(null);
+        loggedUser.setAccountNumber(null);
+        userService.save(loggedUser);
+        log.info("Bank account successfully deleted for " + loggedUser);
     }
 }

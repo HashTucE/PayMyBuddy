@@ -197,7 +197,7 @@ public class TransactionService {
 
     /**
      * Transform the transaction entity to dto
-     * @param transaction
+     * @param transaction transaction
      * @return TransactionDto
      */
     public TransactionDto transactionEntityToDto(Transaction transaction){

@@ -3,7 +3,7 @@ package com.openclassrooms.paymybuddy.service;
 
 import com.openclassrooms.paymybuddy.dto.ContactDto;
 import com.openclassrooms.paymybuddy.entity.User;
-import com.openclassrooms.paymybuddy.repository.UserRepository;
+import com.openclassrooms.paymybuddy.exceptions.AlreadyBuddyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,10 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +30,44 @@ class ContactServiceTest {
 
 
 
+    @Test
+    @DisplayName("should return true if already exist")
+    public void isContactAlreadyExistPositiveTest() {
+
+        //given
+        User user = new User("user@gmail.com", "password");
+        User contact = new User("contact@gmail.com", "password");
+        Set<User> contactList = new HashSet<>();
+        contactList.add(contact);
+        user.setContacts(contactList);
+
+        //when
+        when(userService.getPrincipal()).thenReturn(user);
+        boolean exist = contactService.isContactAlreadyExist("contact@gmail.com");
+
+        //then
+        assertTrue(exist);
+    }
+
+
+    @Test
+    @DisplayName("should return false if not exisiting")
+    public void isContactAlreadyExistNegativeTest() {
+
+        //given
+        User user = new User("user@gmail.com", "password");
+        User contact = new User("contact@gmail.com", "password");
+        Set<User> contactList = new HashSet<>();
+        contactList.add(contact);
+        user.setContacts(contactList);
+
+        //when
+        when(userService.getPrincipal()).thenReturn(user);
+        boolean exist = contactService.isContactAlreadyExist("other@gmail.com");
+
+        //then
+        assertFalse(exist);
+    }
 
 
 
@@ -49,6 +87,29 @@ class ContactServiceTest {
 
         //then
         assertTrue(user.getContacts().contains(contact));
+    }
+
+
+
+    @Test
+    @DisplayName("Should return an exception when contact already added")
+    void addContactNegativeTest() {
+
+        //given
+        User user = new User("user@gmail.com", "password");
+        User contact = new User("contact@gmail.com", "password");
+        Set<User> contactList = new HashSet<>();
+        contactList.add(contact);
+        user.setContacts(contactList);
+
+        ContactDto contactDto = new ContactDto(contact.getEmail());
+
+        //when
+        when(userService.getPrincipal()).thenReturn(user);
+        when(userService.findByEmail(anyString())).thenReturn(contact);
+
+        //then
+        assertThrows(AlreadyBuddyException.class, () -> contactService.addContact(contactDto));
     }
 
 

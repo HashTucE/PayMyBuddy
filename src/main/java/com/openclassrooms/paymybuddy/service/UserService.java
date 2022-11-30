@@ -2,19 +2,16 @@ package com.openclassrooms.paymybuddy.service;
 
 
 import com.openclassrooms.paymybuddy.dto.UserDto;
-import com.openclassrooms.paymybuddy.entity.Transaction;
 import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.exceptions.InvalidEmailException;
 import com.openclassrooms.paymybuddy.exceptions.UserAlreadyExistException;
+import com.openclassrooms.paymybuddy.exceptions.UserNotExistException;
 import com.openclassrooms.paymybuddy.repository.TransactionRepository;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -68,16 +65,17 @@ public class UserService {
      * @return user
      */
     public User findByEmail(String email) {
-        User user;
-        try {
-            user = userRepository.findByEmail(email);
-            log.debug(email + " founded");
 
-        } catch (Exception UserNotExistingException) {
-            log.error(email + " not existing");
-            throw UserNotExistingException;
+
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            log.debug("This email do not use PayMyBuddy app");
+            throw new UserNotExistException("This email do not use PayMyBuddy app");
+        } else {
+            log.debug(email + " founded");
+            return user;
         }
-        return user;
     }
 
 

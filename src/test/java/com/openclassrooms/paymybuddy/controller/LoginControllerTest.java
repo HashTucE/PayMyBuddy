@@ -25,46 +25,46 @@ class LoginControllerTest {
 
 
 
-    @Test
-    void testViewRegister() throws Exception {
-
-        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
-                .formLogin();
-
-        MockMvcBuilders.standaloneSetup(loginController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-
-
-    @Test
-    void testRegisterView() throws Exception {
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/register");
-
-        MockMvcBuilders.standaloneSetup(loginController)
-                .build()
-                .perform(request)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("register"));
-    }
-
-
-
-    @Test
-    void testViewlogin() throws Exception {
-
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/");
-
-        MockMvcBuilders.standaloneSetup(loginController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().size(0))
-                .andExpect(MockMvcResultMatchers.view().name("login"))
-                .andExpect(MockMvcResultMatchers.forwardedUrl("login"));
-    }
+//    @Test
+//    void testViewRegister() throws Exception {
+//
+//        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
+//                .formLogin();
+//
+//        MockMvcBuilders.standaloneSetup(loginController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
+//
+//
+//
+//    @Test
+//    void testRegisterView() throws Exception {
+//
+//        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/register");
+//
+//        MockMvcBuilders.standaloneSetup(loginController)
+//                .build()
+//                .perform(request)
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.view().name("register"));
+//    }
+//
+//
+//
+//    @Test
+//    void testViewlogin() throws Exception {
+//
+//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/");
+//
+//        MockMvcBuilders.standaloneSetup(loginController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.model().size(0))
+//                .andExpect(MockMvcResultMatchers.view().name("login"))
+//                .andExpect(MockMvcResultMatchers.forwardedUrl("login"));
+//    }
 }
 

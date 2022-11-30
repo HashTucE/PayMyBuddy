@@ -16,10 +16,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,8 +50,6 @@ class TransactionServiceTest {
     private TransactionRepository transactionRepository;
 
 
-
-
     @Test
     @DisplayName("Should return the final amount with tax included")
     void getFinalAmountPositiveTest() {
@@ -53,7 +59,6 @@ class TransactionServiceTest {
 
         assertEquals(expectedAmount, transactionService.getFinalAmount(amount));
     }
-
 
 
     @Test
@@ -66,7 +71,7 @@ class TransactionServiceTest {
         User paymybuddy = new User("test3@test.fr", "pass", BigDecimal.ZERO);
 
         TransactionDto transactionDto = new TransactionDto
-                  ("test2@test.fr", new BigDecimal("1000"), "desc");
+                ("test2@test.fr", new BigDecimal("1000"), "desc");
 
         //when
         when(userService.getPrincipal()).thenReturn(loggedUser);
@@ -81,7 +86,6 @@ class TransactionServiceTest {
         assertEquals(beneficiary.getBalance(), BigDecimal.valueOf(1000));
         assertEquals(paymybuddy.getBalance(), BigDecimal.valueOf(5).setScale(2, RoundingMode.HALF_DOWN));
     }
-
 
 
     @Test
@@ -104,7 +108,6 @@ class TransactionServiceTest {
         //then
         assertThrows(InsufficientFundException.class, () -> transactionService.makeTransaction(transactionDto));
     }
-
 
 
     @Test
@@ -132,7 +135,7 @@ class TransactionServiceTest {
 
         //given
         BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", " ");
 
         //when
         when(userService.getPrincipal()).thenReturn(loggedUser);
@@ -199,7 +202,7 @@ class TransactionServiceTest {
 
         //given
         BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000));
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", " ");
 
         //when
         when(userService.getPrincipal()).thenReturn(loggedUser);
@@ -257,24 +260,6 @@ class TransactionServiceTest {
     }
 
 
-//    @Test
-//    @DisplayName("Should merge two lists")
-//    void getMergeListPositiveTest() {
-//
-//        //given
-//        User loggedUser = new User("test@test.fr", "pass");
-//        loggedUser.setCreditList(new ArrayList<>());
-//        loggedUser.setDebitList(new ArrayList<>());
-//
-//        //when
-//        when(userService.getPrincipal()).thenReturn(loggedUser);
-//        transactionService.getMergeList();
-//
-//        //then
-//        assertTrue(transactionService.getMergeList().isEmpty());
-//    }
-
-
     @Test
     @DisplayName("Should return true if loggedUser is beneficiary of the transaction")
     void isLoggedUserBeneficiaryPositiveTest() {
@@ -294,67 +279,136 @@ class TransactionServiceTest {
     }
 
 
+    @Test
+    @DisplayName("should return an empty page when there is no transaction")
+    void getPageTransactionDtoNegativeTest() {
 
-//    @Test
-//    @DisplayName("Should return a custom list from the merge list with same size")
-//    void getCustomListPositiveTest() {
-//
-//        //given
-//        User loggedUser = new User(1, "test@test.fr", "pass");
-//        User contactUser = new User(2, "test2@test.fr", "pass");
-//
-//        Transaction transaction1 = new Transaction(contactUser, loggedUser);
-//        Transaction transaction2 = new Transaction(contactUser, loggedUser);
-//        Transaction transaction3 = new Transaction(contactUser, loggedUser);
-//
-//        List<Transaction> transactionList = new ArrayList<>();
-//        transactionList.add(transaction1);
-//        transactionList.add(transaction2);
-//        transactionList.add(transaction3);
-//
-//        //when
-//        doReturn(transactionList).when(transactionService).getMergeList();
-//        doReturn(true).when(transactionService).isLoggedUserBeneficiary(any(Transaction.class));
-//        List<TransactionDto> resultList = transactionService.getCustomList();
-//
-//        //then
-//        assertEquals(3, resultList.size());
-//    }
+        //given
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000));
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+        when(transactionRepository.findAllTransactionsById(anyInt(), any())).thenReturn(new PageImpl<>(new ArrayList<>()));
+
+        //then
+        assertTrue(transactionService.getPageTransactionDto(1).toList().isEmpty());
+        verify(transactionRepository).findAllTransactionsById(anyInt(), any());
+        verify(userService).getPrincipal();
+    }
 
 
-//    @Test
-//    @DisplayName("Should return an ordered list")
-//    void getSortedListPositiveTest() {
-//
-//        //given
-//        TransactionDto transaction1 = new TransactionDto("test@test.fr", BigDecimal.valueOf(100), "desc");
-//        LocalDateTime date1 = LocalDate.of(2000, 1, 1).atStartOfDay();
-//        transaction1.setDate(Date.from(date1.atZone(ZoneId.of("UTC")).toInstant()));
-//
-//        TransactionDto transaction2 = new TransactionDto("test@test.fr", BigDecimal.valueOf(100), "desc");
-//        LocalDateTime date2 = LocalDate.of(1800, 1, 1).atStartOfDay();
-//        transaction2.setDate(Date.from(date2.atZone(ZoneId.of("UTC")).toInstant()));
-//
-//        TransactionDto transaction3 = new TransactionDto("test@test.fr", BigDecimal.valueOf(100), "desc");
-//        LocalDateTime date3 = LocalDate.of(1900, 1, 1).atStartOfDay();
-//        transaction3.setDate(Date.from(date3.atZone(ZoneId.of("UTC")).toInstant()));
-//
-//        List<TransactionDto> transactionList = new ArrayList<>();
-//        transactionList.add(transaction1);
-//        transactionList.add(transaction2);
-//        transactionList.add(transaction3);
-//
-//        List<TransactionDto> expectedSortedList = new ArrayList<>();
-//        expectedSortedList.add(transaction1);
-//        expectedSortedList.add(transaction3);
-//        expectedSortedList.add(transaction2);
-//
-//        //when
-//        List<TransactionDto> sortedList = transactionService.getSortedList(transactionList);
-//
-//        //then
-//        assertEquals(expectedSortedList, sortedList);
-//    }
+    @Test
+    @DisplayName("should return a dto from entity as beneficiary logged user")
+    void transactionEntityToDtoTest() {
 
+        //given
+        User sender = new User("sender@test.fr", "pass", BigDecimal.valueOf(100));
+        sender.setContacts(new HashSet<>());
+        sender.setCreditList(new ArrayList<>());
+        sender.setDebitList(new ArrayList<>());
+
+        User beneficiary = new User("beneficiary@test.fr", "pass", BigDecimal.valueOf(50));
+        beneficiary.setContacts(new HashSet<>());
+        beneficiary.setCreditList(new ArrayList<>());
+        beneficiary.setDebitList(new ArrayList<>());
+
+        Transaction transaction = new Transaction(sender, beneficiary, BigDecimal.valueOf(50), "desc");
+        LocalDateTime atStartOfDayResult = LocalDate.of(1970, 1, 1).atStartOfDay();
+        Date fromResult = Date.from(atStartOfDayResult.atZone(ZoneId.of("UTC")).toInstant());
+        transaction.setDate(fromResult);
+
+        ArrayList<Transaction> transactionList = new ArrayList<>();
+        transactionList.add(transaction);
+        PageImpl<Transaction> pageImpl = new PageImpl<>(transactionList);
+        when(transactionRepository.findAllTransactionsById(anyInt(), any())).thenReturn(pageImpl);
+
+        User loggedUser = new User("beneficiary@test.fr", "pass", BigDecimal.valueOf(50));
+        loggedUser.setContacts(new HashSet<>());
+        loggedUser.setCreditList(new ArrayList<>());
+        loggedUser.setDebitList(new ArrayList<>());
+
+        BigDecimal valueOfResult = BigDecimal.valueOf(50);
+
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+        List<TransactionDto> toListResult = transactionService.getPageTransactionDto(1).toList();
+
+        //then
+        assertEquals(1, toListResult.size());
+        TransactionDto getResult = toListResult.get(0);
+
+        BigDecimal amount = getResult.getAmount();
+        assertEquals(valueOfResult, amount);
+        assertEquals("50", amount.toString());
+
+        assertEquals("+", getResult.getSign());
+        assertSame(fromResult, getResult.getDate());
+        assertEquals("sender@test.fr", getResult.getEmail());
+        assertEquals("desc", getResult.getDescription());
+
+        verify(transactionRepository, times(1)).findAllTransactionsById(anyInt(), any());
+        verify(userService, atLeast(1)).getPrincipal();
+    }
+
+
+    @Test
+    @DisplayName("should return a dto from entity as sender logged user")
+    void transactionEntityToDtoTest2() {
+
+        //given
+        User sender = new User("sender@test.fr", "pass", BigDecimal.valueOf(100));
+        sender.setContacts(new HashSet<>());
+        sender.setCreditList(new ArrayList<>());
+        sender.setDebitList(new ArrayList<>());
+
+        User beneficiary = new User("beneficiary@test.fr", "pass", BigDecimal.valueOf(50));
+        beneficiary.setContacts(new HashSet<>());
+        beneficiary.setCreditList(new ArrayList<>());
+        beneficiary.setDebitList(new ArrayList<>());
+
+        Transaction transaction = new Transaction(sender, beneficiary, BigDecimal.valueOf(50), "desc");
+        LocalDateTime atStartOfDayResult = LocalDate.of(1970, 1, 1).atStartOfDay();
+        Date fromResult = Date.from(atStartOfDayResult.atZone(ZoneId.of("UTC")).toInstant());
+        transaction.setDate(fromResult);
+
+        ArrayList<Transaction> transactionList = new ArrayList<>();
+        transactionList.add(transaction);
+        PageImpl<Transaction> pageImpl = new PageImpl<>(transactionList);
+        when(transactionRepository.findAllTransactionsById(anyInt(), any())).thenReturn(pageImpl);
+
+        User loggedUser = new User("sender@test.fr", "pass", BigDecimal.valueOf(100));
+        loggedUser.setContacts(new HashSet<>());
+        loggedUser.setCreditList(new ArrayList<>());
+        loggedUser.setDebitList(new ArrayList<>());
+
+        BigDecimal valueOfResult = BigDecimal.valueOf(50);
+
+
+        //when
+        when(userService.getPrincipal()).thenReturn(loggedUser);
+        List<TransactionDto> toListResult = transactionService.getPageTransactionDto(1).toList();
+
+        //then
+        assertEquals(1, toListResult.size());
+        TransactionDto getResult = toListResult.get(0);
+
+        BigDecimal amount = getResult.getAmount();
+        assertEquals(valueOfResult, amount);
+        assertEquals("50", amount.toString());
+
+        assertEquals("-", getResult.getSign());
+        assertSame(fromResult, getResult.getDate());
+        assertEquals("beneficiary@test.fr", getResult.getEmail());
+        assertEquals("desc", getResult.getDescription());
+
+        verify(transactionRepository, times(1)).findAllTransactionsById(anyInt(), any());
+        verify(userService, atLeast(1)).getPrincipal();
+    }
 
 }
+
+
+
+
+

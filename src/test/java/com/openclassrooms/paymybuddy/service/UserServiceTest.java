@@ -4,6 +4,7 @@ import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.exceptions.InvalidEmailException;
 import com.openclassrooms.paymybuddy.exceptions.UserAlreadyExistException;
+import com.openclassrooms.paymybuddy.exceptions.UserNotExistException;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,16 +51,35 @@ class UserServiceTest {
 
 
     @Test
-    @DisplayName("Should call findByMail method")
+    @DisplayName("Should call findByMail from repository")
     void findByMailPositiveTest() {
 
         //given
+        User user = new User("test@test.fr", "pass");
+
         //when
-        userService.findByEmail(anyString());
+        when(userRepository.findByEmail(anyString())).thenReturn(user);
+        userService.findByEmail("test@test.fr");
 
         //then
         verify(userRepository, times(1)).findByEmail(anyString());
     }
+
+
+
+    @Test
+    @DisplayName("should throws an exception when user is null")
+    void findByMailNegativeTest() {
+
+        //given
+        User user = new User();
+
+        //then
+        assertThrows(UserNotExistException.class, () -> userService.findByEmail(user.getEmail()));
+    }
+
+
+
 
 
 
