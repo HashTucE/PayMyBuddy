@@ -16,12 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 
 @Service
+@Transactional
 public class TransactionService {
 
 
@@ -188,7 +190,7 @@ public class TransactionService {
     public Page<TransactionDto> getPageTransactionDto(int pageNumber) {
 
         User loggedUser = userService.getPrincipal();
-        Pageable sortedByDate = PageRequest.of(pageNumber - 1, 5, Sort.by("date").descending());
+        Pageable sortedByDate = PageRequest.of(pageNumber - 1, 5, Sort.by("id").descending());
         Page<Transaction> transactionPage = transactionRepository.findAllTransactionsById(loggedUser.getUserId(), sortedByDate);
 
         return transactionPage.map(this::transactionEntityToDto);

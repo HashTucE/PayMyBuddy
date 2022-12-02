@@ -10,11 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ContactService {
 
 
@@ -80,7 +79,6 @@ public class ContactService {
      * delete a contact from the list
      * @param email email to delete
      */
-    @Transactional
     public void deleteContact(String email) {
 
         User loggedUser = userService.getPrincipal();
