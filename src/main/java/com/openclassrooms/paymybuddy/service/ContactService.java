@@ -4,6 +4,8 @@ package com.openclassrooms.paymybuddy.service;
 import com.openclassrooms.paymybuddy.dto.ContactDto;
 import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.exceptions.AlreadyBuddyException;
+import com.openclassrooms.paymybuddy.exceptions.UserNotExistException;
+import com.openclassrooms.paymybuddy.exceptions.YourselfException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +58,18 @@ public class ContactService {
         boolean alreadyExist = isContactAlreadyExist(contactDto.getEmail());
 
         if (alreadyExist) {
-            log.error(contactDto.getEmail() + " is already contact's " + loggedUser);
-            throw new AlreadyBuddyException(contactDto.getEmail() + " is already contact's " + loggedUser);
+            log.error(contactDto.getEmail() + " is already contact's " + loggedUser.getEmail());
+            throw new AlreadyBuddyException(contactDto.getEmail() + " is already contact's " + loggedUser.getEmail());
+        } else if (contactDto.getEmail().equals(loggedUser.getEmail())) {
+            log.error("logged user can't add his own email");
+            throw new YourselfException("This is your own email !");
+        } else if (contactUser == null) {
+            log.error("user not existing");
+            throw new UserNotExistException("User not existing !");
         } else {
             loggedUser.getContacts().add(contactUser);
             userService.save(loggedUser);
-            log.info("Contact " + contactDto.getEmail() + " successfully added from " + loggedUser);
+            log.info("Contact " + contactDto.getEmail() + " successfully added from " + loggedUser.getEmail());
         }
 
     }
@@ -80,7 +88,7 @@ public class ContactService {
 
         loggedUser.getContacts().remove(contactUser);
         userService.save(loggedUser);
-        log.info("Contact " + email + " successfully deleted from " + loggedUser);
+        log.info("Contact " + email + " successfully deleted from " + loggedUser.getEmail());
     }
 
 

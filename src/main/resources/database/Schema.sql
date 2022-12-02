@@ -27,4 +27,21 @@ foreign key (sender_id) references users(id),
 foreign key (beneficiary_id) references users(id)
 );
 
+create table user_contacts(
+user_id integer not null,
+contact_id integer not null,
+primary key (user_id, contact_id)
+);
+
+alter table user_contacts
+add constraint FK_contact_id
+foreign key (contact_id)
+references users(id);
+
+
+alter table user_contacts
+add constraint FK_user_id
+foreign key (user_id)
+references users(id);
+
 commit;

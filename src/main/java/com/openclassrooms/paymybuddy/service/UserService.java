@@ -5,8 +5,6 @@ import com.openclassrooms.paymybuddy.dto.UserDto;
 import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.exceptions.InvalidEmailException;
 import com.openclassrooms.paymybuddy.exceptions.UserAlreadyExistException;
-import com.openclassrooms.paymybuddy.exceptions.UserNotExistException;
-import com.openclassrooms.paymybuddy.repository.TransactionRepository;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
@@ -28,9 +26,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private TransactionRepository transactionRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -66,16 +61,10 @@ public class UserService {
      */
     public User findByEmail(String email) {
 
-
         User user = userRepository.findByEmail(email);
+        log.debug(email + " founded");
 
-        if (user == null) {
-            log.debug("This email do not use PayMyBuddy app");
-            throw new UserNotExistException("This email do not use PayMyBuddy app");
-        } else {
-            log.debug(email + " founded");
-            return user;
-        }
+        return user;
     }
 
 
@@ -104,6 +93,8 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setBalance(BigDecimal.ZERO);
+        user.setBankName(null);
+        user.setAccountNumber(null);
         log.info(userDto.getEmail() + " created");
         userRepository.save(user);
         return user;
@@ -131,7 +122,6 @@ public class UserService {
      */
     public User getPrincipal() {
 
-        //SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("toto", "tutu"));
         String username;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

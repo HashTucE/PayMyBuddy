@@ -4,6 +4,8 @@ package com.openclassrooms.paymybuddy.service;
 import com.openclassrooms.paymybuddy.dto.ContactDto;
 import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.exceptions.AlreadyBuddyException;
+import com.openclassrooms.paymybuddy.exceptions.UserNotExistException;
+import com.openclassrooms.paymybuddy.exceptions.YourselfException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -110,6 +112,41 @@ class ContactServiceTest {
 
         //then
         assertThrows(AlreadyBuddyException.class, () -> contactService.addContact(contactDto));
+    }
+
+
+
+    @Test
+    @DisplayName("Should return an exception when user add his own email")
+    void addContactNegativeTest2() {
+
+        //given
+        User user = new User("user@gmail.com", "password");
+        ContactDto contactDto = new ContactDto(user.getEmail());
+
+        //when
+        when(userService.getPrincipal()).thenReturn(user);
+        when(userService.findByEmail(anyString())).thenReturn(user);
+
+        //then
+        assertThrows(YourselfException.class, () -> contactService.addContact(contactDto));
+    }
+
+
+
+    @Test
+    @DisplayName("Should return an exception when user not exist")
+    void addContactNegativeTest3() {
+
+        //given
+        User user = new User("user@gmail.com", "password");
+        ContactDto contactDto = new ContactDto("contact@gmail.com");
+
+        //when
+        when(userService.getPrincipal()).thenReturn(user);
+
+        //then
+        assertThrows(UserNotExistException.class, () -> contactService.addContact(contactDto));
     }
 
 

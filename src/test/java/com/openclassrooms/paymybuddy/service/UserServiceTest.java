@@ -5,6 +5,7 @@ import com.openclassrooms.paymybuddy.entity.User;
 import com.openclassrooms.paymybuddy.exceptions.InvalidEmailException;
 import com.openclassrooms.paymybuddy.exceptions.UserAlreadyExistException;
 import com.openclassrooms.paymybuddy.exceptions.UserNotExistException;
+import com.openclassrooms.paymybuddy.repository.TransactionRepository;
 import com.openclassrooms.paymybuddy.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +14,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ContextConfiguration(classes = {UserService.class, BCryptPasswordEncoder.class})
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+    @MockBean
+    private TransactionRepository transactionRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -30,8 +42,6 @@ class UserServiceTest {
     @Spy
     @InjectMocks
     private UserService userService;
-
-
 
 
     @Test
@@ -48,8 +58,6 @@ class UserServiceTest {
     }
 
 
-
-
     @Test
     @DisplayName("Should call findByMail from repository")
     void findByMailPositiveTest() {
@@ -64,23 +72,6 @@ class UserServiceTest {
         //then
         verify(userRepository, times(1)).findByEmail(anyString());
     }
-
-
-
-    @Test
-    @DisplayName("should throws an exception when user is null")
-    void findByMailNegativeTest() {
-
-        //given
-        User user = new User();
-
-        //then
-        assertThrows(UserNotExistException.class, () -> userService.findByEmail(user.getEmail()));
-    }
-
-
-
-
 
 
     @Test
@@ -101,10 +92,6 @@ class UserServiceTest {
     }
 
 
-
-
-
-
     @Test
     @DisplayName("Should throw an exception when the email is invalid")
     void createUserNegativeTest1() {
@@ -120,7 +107,6 @@ class UserServiceTest {
         //then
         assertThrows(InvalidEmailException.class, () -> userService.createUser(userDto));
     }
-
 
 
     @Test
@@ -139,8 +125,6 @@ class UserServiceTest {
         //then
         assertThrows(UserAlreadyExistException.class, () -> userService.createUser(userDto));
     }
-
-
 
 
     @Test
@@ -168,21 +152,26 @@ class UserServiceTest {
 
 
 
-//    @Test
-//    @DisplayName("Should return the logged user")
-//    void getPrincipalPositiveTest() {
-//
-//        //given
+
+    @Test
+    @WithMockUser(username = "test@test.fr", password = "pass", roles = "USER")
+    @DisplayName("Should return the logged user")
+    void getPrincipalPositiveTest() {
+
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext.setAuthentication(new TestingAuthenticationToken("test@test.fr",null));
+        SecurityContextHolder.setContext(securityContext);
+
+        //given
+//        Object userObject = new User("test@test.fr", "pass");
 //        User user = new User("test@test.fr", "pass");
 //
 //        //when
-//        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(any(Object.class));
-//        when(userService.findByEmail(anyString())).thenReturn(user);
 //        User principal = userService.getPrincipal();
 //
 //        //then
 //        assertEquals(user.getEmail(), principal.getEmail());
-//    }
+    }
 
 
 }

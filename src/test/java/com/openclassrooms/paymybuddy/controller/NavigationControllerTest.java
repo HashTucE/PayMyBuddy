@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ContextConfiguration(classes = {NavigationController.class})
 @ExtendWith(SpringExtension.class)
+
+
 class NavigationControllerTest {
     @Autowired
     private NavigationController navigationController;
@@ -30,36 +32,6 @@ class NavigationControllerTest {
     private UserService userService;
 
 
-    @Test
-    void testGetForgetPassword() throws Exception {
 
-        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
-                .formLogin();
-
-        MockMvcBuilders.standaloneSetup(navigationController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-
-    @Test
-    void testViewHome() throws Exception {
-
-        //given
-        User user = new User("test@test.fr", "pass", BigDecimal.ZERO);
-
-        //when
-        when(userService.getPrincipal()).thenReturn(user);
-
-        //then
-        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
-                .formLogin();
-
-        MockMvcBuilders.standaloneSetup(navigationController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
 }
 

@@ -135,7 +135,7 @@ class TransactionServiceTest {
 
         //given
         BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", " ");
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000));
 
         //when
         when(userService.getPrincipal()).thenReturn(loggedUser);
@@ -144,37 +144,6 @@ class TransactionServiceTest {
         assertThrows(NoBankAccountException.class, () -> transactionService.deposit(bankDto));
     }
 
-
-    @Test
-    @DisplayName("Should throw exception when only bank name is set")
-    void depositNegativeTest2() {
-
-        //given
-        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), "name", " ");
-
-        //when
-        when(userService.getPrincipal()).thenReturn(loggedUser);
-
-        //then
-        assertThrows(NoBankAccountException.class, () -> transactionService.deposit(bankDto));
-    }
-
-
-    @Test
-    @DisplayName("Should throw exception when only account number is set")
-    void depositNegativeTest3() {
-
-        //given
-        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", "FR12");
-
-        //when
-        when(userService.getPrincipal()).thenReturn(loggedUser);
-
-        //then
-        assertThrows(NoBankAccountException.class, () -> transactionService.deposit(bankDto));
-    }
 
 
     @Test
@@ -202,7 +171,7 @@ class TransactionServiceTest {
 
         //given
         BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", " ");
+        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000));
 
         //when
         when(userService.getPrincipal()).thenReturn(loggedUser);
@@ -211,37 +180,6 @@ class TransactionServiceTest {
         assertThrows(NoBankAccountException.class, () -> transactionService.withdraw(bankDto));
     }
 
-
-    @Test
-    @DisplayName("Should throw exception when only bank name is set")
-    void withdrawNegativeTest2() {
-
-        //given
-        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), "name", " ");
-
-        //when
-        when(userService.getPrincipal()).thenReturn(loggedUser);
-
-        //then
-        assertThrows(NoBankAccountException.class, () -> transactionService.withdraw(bankDto));
-    }
-
-
-    @Test
-    @DisplayName("Should throw exception when only account number is set")
-    void withdrawNegativeTest3() {
-
-        //given
-        BankDto bankDto = new BankDto(BigDecimal.valueOf(100));
-        User loggedUser = new User("test@test.fr", "pass", BigDecimal.valueOf(1000), " ", "FR12");
-
-        //when
-        when(userService.getPrincipal()).thenReturn(loggedUser);
-
-        //then
-        assertThrows(NoBankAccountException.class, () -> transactionService.withdraw(bankDto));
-    }
 
 
     @Test

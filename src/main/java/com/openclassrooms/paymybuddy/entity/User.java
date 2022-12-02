@@ -98,11 +98,6 @@ public class User implements UserDetails {
         this.accountNumber = accountNumber;
     }
 
-    public User(String email, List<Transaction> debitList, List<Transaction> creditList) {
-        this.email = email;
-        this.debitList = debitList;
-        this.creditList = creditList;
-    }
 
     public int getUserId() {
         return userId;

@@ -1,128 +1,143 @@
 package com.openclassrooms.paymybuddy.controller;
 
 import com.openclassrooms.paymybuddy.entity.User;
-import com.openclassrooms.paymybuddy.service.AccountService;
-import com.openclassrooms.paymybuddy.service.ContactService;
 import com.openclassrooms.paymybuddy.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.springframework.ui.Model;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {ProfileController.class})
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class ProfileControllerTest {
-    @MockBean
-    private AccountService accountService;
 
-    @MockBean
-    private ContactService contactService;
 
-    @Autowired
     private ProfileController profileController;
 
-    @MockBean
+    @Mock
+    private Model model;
+
+    @Mock
     private UserService userService;
 
 
+    @BeforeEach
+    public void before() {
+        profileController = new ProfileController();
+    }
 
     @Test
-    void testAddAccount() throws Exception {
-
-        doNothing().when(accountService).addBankAccount(any());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/addAccount");
-        MockMvcBuilders.standaloneSetup(profileController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.model().size(2))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
+    void addContact() {
     }
 
 
-
-    @Test
-    void testDeleteAccount() throws Exception {
-
-        doNothing().when(accountService).deleteBankAccount();
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/deleteAccount");
-        MockMvcBuilders.standaloneSetup(profileController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.model().size(2))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
-    }
+//    @Test
+//    public void viewControllerTest() {
+//
+//        User user = new User("test@test.fr", "pass", "bank", "number");
+//        String returnValue = profileController.viewProfile(model);
+//
+//        when(userService.getPrincipal()).thenReturn(user);
+//        verify(model, times(1)).addAttribute("bankName", user.getBankName());
+//        assertEquals("profile", returnValue);
+//    }
 
 
 
-    @Test
-    void testAddContact() throws Exception {
-
-        doNothing().when(contactService).addContact(any());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/addContact");
-        MockMvcBuilders.standaloneSetup(profileController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.model().size(2))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
-    }
 
 
 
-    @Test
-    void testDeleteContact() throws Exception {
 
-        doNothing().when(contactService).deleteContact(any());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/deleteContact/{email}",
-                "jane.doe@example.org");
-        MockMvcBuilders.standaloneSetup(profileController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.model().size(2))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
-    }
+//    @Test
+//    void testAddAccount() throws Exception {
+//
+//        doNothing().when(accountService).addBankAccount(any());
+//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/addAccount");
+//        MockMvcBuilders.standaloneSetup(profileController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isFound())
+//                .andExpect(MockMvcResultMatchers.model().size(2))
+//                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
+//                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
+//                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
+//    }
+//
+//
+//
+//    @Test
+//    void testDeleteAccount() throws Exception {
+//
+//        doNothing().when(accountService).deleteBankAccount();
+//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/deleteAccount");
+//        MockMvcBuilders.standaloneSetup(profileController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isFound())
+//                .andExpect(MockMvcResultMatchers.model().size(2))
+//                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
+//                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
+//                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
+//    }
+//
+//
+//
+//    @Test
+//    void testAddContact() throws Exception {
+//
+//        doNothing().when(contactService).addContact(any());
+//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/addContact");
+//        MockMvcBuilders.standaloneSetup(profileController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isFound())
+//                .andExpect(MockMvcResultMatchers.model().size(2))
+//                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
+//                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
+//                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
+//    }
+//
+//
+//
+//    @Test
+//    void testDeleteContact() throws Exception {
+//
+//        doNothing().when(contactService).deleteContact(any());
+//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/profile/deleteContact/{email}",
+//                "jane.doe@example.org");
+//        MockMvcBuilders.standaloneSetup(profileController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isFound())
+//                .andExpect(MockMvcResultMatchers.model().size(2))
+//                .andExpect(MockMvcResultMatchers.model().attributeExists("accountDto", "contactDto"))
+//                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"))
+//                .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"));
+//    }
+//
+//
+//
+//    @Test
+//    void testProfileVariables() throws Exception {
+//
+//
+//        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
+//                .formLogin();
+//
+//        MockMvcBuilders.standaloneSetup(profileController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isNotFound());
+//    }
 
 
 
-    @Test
-    void testProfileVariables() throws Exception {
 
-        //given
-        User user = new User("test@test.fr", "pass", BigDecimal.ZERO);
-
-        //when
-        when(userService.getPrincipal()).thenReturn(user);
-
-        //then
-        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
-                .formLogin();
-
-        MockMvcBuilders.standaloneSetup(profileController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
 }
 

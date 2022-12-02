@@ -12,10 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ProfileController {
@@ -47,7 +44,7 @@ public class ProfileController {
 
 
     @GetMapping("/profile")
-    public String profileVariables(Model model) {
+    public String viewProfile(Model model) {
 
         User loggedUser = userService.getPrincipal();
         model.addAttribute("bankName", loggedUser.getBankName());
@@ -66,7 +63,7 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
-    @PostMapping("/profile/deleteAccount")
+    @DeleteMapping("/profile/deleteAccount")
     public String deleteAccount() {
         accountService.deleteBankAccount();
 
@@ -82,7 +79,7 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
-    @PostMapping("/profile/deleteContact/{email}")
+    @DeleteMapping("/profile/deleteContact/{email}")
     public String deleteContact(@PathVariable String email) {
         contactService.deleteContact(email);
 

@@ -1,70 +1,38 @@
 package com.openclassrooms.paymybuddy.controller;
 
-import com.openclassrooms.paymybuddy.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.ModelAndView;
 
-@ContextConfiguration(classes = {LoginController.class})
-@ExtendWith(SpringExtension.class)
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+
+@ExtendWith(MockitoExtension.class)
 class LoginControllerTest {
 
     @Autowired
     private LoginController loginController;
 
-    @MockBean
-    private UserService userService;
+    @Mock
+    private ModelAndView modelAndView;
 
 
 
 //    @Test
-//    void testViewRegister() throws Exception {
+//    void viewLoginTest() {
 //
-//        SecurityMockMvcRequestBuilders.FormLoginRequestBuilder requestBuilder = SecurityMockMvcRequestBuilders
-//                .formLogin();
+//        //given
 //
-//        MockMvcBuilders.standaloneSetup(loginController)
-//                .build()
-//                .perform(requestBuilder)
-//                .andExpect(MockMvcResultMatchers.status().isOk());
-//    }
+//        //when
+//        doNothing().when(modelAndView).setViewName(anyString());
+//        loginController.viewlogin();
 //
-//
-//
-//    @Test
-//    void testRegisterView() throws Exception {
-//
-//        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/register");
-//
-//        MockMvcBuilders.standaloneSetup(loginController)
-//                .build()
-//                .perform(request)
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.view().name("register"));
-//    }
-//
-//
-//
-//    @Test
-//    void testViewlogin() throws Exception {
-//
-//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/");
-//
-//        MockMvcBuilders.standaloneSetup(loginController)
-//                .build()
-//                .perform(requestBuilder)
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.model().size(0))
-//                .andExpect(MockMvcResultMatchers.view().name("login"))
-//                .andExpect(MockMvcResultMatchers.forwardedUrl("login"));
+//        //then
+//        verify(modelAndView, times(1)).setViewName(anyString());
 //    }
 }
 

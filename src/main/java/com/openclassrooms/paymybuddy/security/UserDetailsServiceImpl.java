@@ -21,10 +21,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        if (email.trim().isEmpty()) {
-            throw new UsernameNotFoundException("username is empty");
-        }
-
         User user = userService.findByEmail(email);
 
         if (user == null) {

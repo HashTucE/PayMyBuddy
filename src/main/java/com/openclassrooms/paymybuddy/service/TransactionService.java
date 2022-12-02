@@ -126,13 +126,13 @@ public class TransactionService {
         BigDecimal roundedAmount = bankDto.getAmount().setScale(2, RoundingMode.HALF_DOWN);
         User loggedUser = userService.getPrincipal();
 
-        if(!loggedUser.getBankName().isBlank() && !loggedUser.getAccountNumber().isBlank()) {
+        if(loggedUser.getAccountNumber() == null) {
+            log.error("Bank account not set for " + loggedUser.getEmail());
+            throw new NoBankAccountException("Bank account not set for " + loggedUser.getEmail());
+        } else {
             loggedUser.setBalance(loggedUser.getBalance().add(roundedAmount));
             userRepository.save(loggedUser);
             log.info(roundedAmount + " was added to the wallet of " + loggedUser);
-        } else {
-            log.error("Bank account not set for " + loggedUser.getEmail());
-            throw new NoBankAccountException("Bank account not set for " + loggedUser.getEmail());
         }
     }
 
@@ -151,7 +151,7 @@ public class TransactionService {
         if (loggedUser.getBalance().compareTo(bankDto.getAmount()) < 0) {
             log.error("Fund insufficient for " + loggedUser.getEmail());
             throw new InsufficientFundException("Fund insufficient for " + loggedUser.getEmail());
-        } else if(!loggedUser.getBankName().isBlank() && !loggedUser.getAccountNumber().isBlank()) {
+        } else if(loggedUser.getAccountNumber() != null) {
             loggedUser.setBalance(loggedUser.getBalance().subtract(roundedAmount));
             userRepository.save(loggedUser);
             log.info(roundedAmount + " was sent to the bank account of " + loggedUser);

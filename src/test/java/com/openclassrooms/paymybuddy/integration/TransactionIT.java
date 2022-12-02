@@ -1,51 +1,40 @@
 package com.openclassrooms.paymybuddy.integration;
 
-import com.openclassrooms.paymybuddy.dto.BankDto;
-import com.openclassrooms.paymybuddy.dto.TransactionDto;
-import com.openclassrooms.paymybuddy.entity.User;
-import com.openclassrooms.paymybuddy.repository.UserRepository;
+import com.openclassrooms.paymybuddy.controller.TransactionController;
 import com.openclassrooms.paymybuddy.service.TransactionService;
-import com.openclassrooms.paymybuddy.service.UserService;
-import org.junit.jupiter.api.*;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AutoConfigureMockMvc
 public class TransactionIT {
 
 
     @Autowired
-    UserService userService;
+    private MockMvc mockMvc;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    TransactionService transactionService;
+    @MockBean
+    private TransactionService transactionService;
 
 
 
-    private User userIT;
-    private int id;
-
-
-
-    @BeforeEach
-    void createUser() {
-        userIT = new User("userIT@test.fr", "pass", BigDecimal.ZERO,"name", "number");
-        userRepository.save(userIT);
-        id = userIT.getUserId();
-    }
-
-    @AfterEach
-    void deleteUser() {
-        userRepository.deleteById(id);
+    @Before
+    public void setup() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new TransactionController()).build();
     }
 
 
@@ -53,69 +42,78 @@ public class TransactionIT {
 
 
     @Test
-    @DisplayName("Should add money to user's balance")
-    @WithMockUser("userIT@test.fr")
-    void depositIT() {
-
-        //given
-        BankDto amount = new BankDto(BigDecimal.valueOf(50));
-
-        //when
-        transactionService.deposit(amount);
-
-        //then
-        assertEquals(BigDecimal.valueOf(50), userIT.getBalance());
+    void viewTransferIT() throws Exception {
+        this.mockMvc.perform(get("/transfer").with(user("test@paymybuddy.com")))
+                .andExpect(status().isFound())
+                .andExpect(authenticated())
+                .andExpect(redirectedUrl("/transfer/page/1"))
+                .andExpect(view().name("redirect:/transfer/page/1"))
+                .andReturn();
     }
 
 
 
-    @Test
-    @DisplayName("Should subtract money to user's balance")
-    @WithMockUser("userIT@test.fr")
-    void withdrawIT() {
 
-        //given
-        userIT.setBalance(BigDecimal.valueOf(100));
-        BankDto amount = new BankDto(BigDecimal.valueOf(50));
-
-        //when
-        transactionService.withdraw(amount);
-
-        //then
-        assertEquals(BigDecimal.valueOf(50), userIT.getBalance());
-    }
-
-
-
-    @Test
-    @DisplayName("Should make a transfer from TransactionDto")
-    @WithMockUser("userIT@test.fr")
-    void transferToBuddyIT() {
-
-        //given
-        userIT.setBalance(BigDecimal.valueOf(1005));
-
-        User beneficiary = new User("beneficiaryIT@test.fr", "pass", "name", "number");
-        userRepository.save(beneficiary);
-        int id2 = beneficiary.getUserId();
-
-        User payMyBuddy = userService.findByEmail("bill@paymybuddy.com");
-
-        TransactionDto transactionDto = new TransactionDto("beneficiaryIT@test.fr", BigDecimal.valueOf(1000), "test");
-
-        //when
-        transactionService.makeTransaction(transactionDto);
-
-        //then
-        assertEquals(BigDecimal.ZERO, userIT.getBalance());
-        assertEquals(BigDecimal.valueOf(1000), beneficiary.getBalance());
-        assertEquals(BigDecimal.valueOf(5), payMyBuddy.getBalance());
-
-        userRepository.deleteById(id2);
-
-        //what about bill@paymybuddy ???
-    }
-
-
-
+//    @Test
+//    void getOnePageIT() throws Exception {
+//        this.mockMvc.perform(get("/transfer/page/{pageNumber}").with(user("test@paymybuddy.com")))
+//                .andExpect(status().isOk())
+//                .andExpect(authenticated())
+//                .andExpect(model().attributeExists("contacts"))
+//                .andExpect(model().attributeExists("balance"))
+//                .andExpect(model().attributeExists("currentPage"))
+//                .andExpect(model().attributeExists("totalItems"))
+//                .andExpect(model().attributeExists("totalPages"))
+//                .andExpect(model().attributeExists("transactions"))
+//                .andExpect(view().name("transfer"))
+//                .andReturn();
+//    }
+//
+//
+//    @Test
+//    void receiveFromBankIT() throws Exception {
+//
+//        doNothing().when(transactionService).deposit(any());
+//
+//        this.mockMvc.perform(post("/transfer/fromBank").with(user("test@paymybuddy.com")))
+//                .andExpect(status().isOk())
+//                .andExpect(model().size(2))
+//                .andExpect(authenticated())
+//                .andExpect(model().attributeExists("bankDto", "transactionDto"))
+//                .andExpect(redirectedUrl("/transfer"))
+//                .andExpect(view().name("redirect:/transfer"))
+//                .andReturn();
+//    }
+//
+//
+//    @Test
+//    void sendToBankIT() throws Exception {
+//
+//        doNothing().when(transactionService).withdraw(any());
+//
+//        this.mockMvc.perform(post("/transfer/toBank").with(user("test@paymybuddy.com")))
+//                .andExpect(status().isOk())
+//                .andExpect(model().size(2))
+//                .andExpect(authenticated())
+//                .andExpect(model().attributeExists("bankDto", "transactionDto"))
+//                .andExpect(redirectedUrl("/transfer"))
+//                .andExpect(view().name("redirect:/transfer"))
+//                .andReturn();
+//    }
+////
+////
+//    @Test
+//    void sendToBuddyIT() throws Exception {
+//
+//        doNothing().when(transactionService).makeTransaction(any());
+//
+//        this.mockMvc.perform(post("/transfer/toBuddy").with(user("test@paymybuddy.com")))
+//                .andExpect(status().isFound())
+//                .andExpect(model().size(3))
+//                .andExpect(authenticated())
+//                .andExpect(model().attributeExists("transaction", "transactionDto"))
+//                .andExpect(redirectedUrl("/transfer"))
+//                .andExpect(view().name("redirect:/transfer"))
+//                .andReturn();
+//    }
 }
