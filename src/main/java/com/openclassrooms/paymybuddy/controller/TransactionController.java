@@ -11,11 +11,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,66 +50,84 @@ public class TransactionController {
 
 
     @GetMapping("/transfer")
-    public String viewTransfer(Model model) {
+    public ModelAndView viewTransfer() {
 
-        log.info("request get viewTransfer into Transaction controller");
-        return "redirect:/transfer/page/1";
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("redirect:/transfer/page/1");
+
+        log.info("request get viewTransfer");
+        return mav;
     }
 
 
 
     @GetMapping("/transfer/page/{pageNumber}")
-    public String getOnePage(Model model, @PathVariable("pageNumber") int currentPage){
+    public ModelAndView getOnePage(@PathVariable("pageNumber") int currentPage){
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/transfer");
 
         User loggedUser = userService.getPrincipal();
-        model.addAttribute("contacts", loggedUser.getContacts());
-        model.addAttribute("balance", loggedUser.getBalance());
+        mav.addObject("contacts", loggedUser.getContacts());
+        mav.addObject("balance", loggedUser.getBalance());
 
         Page<TransactionDto> page = transactionService.getPageTransactionDto(currentPage);
         List<TransactionDto> transactions = page.getContent();
 
         long totalItems = page.getTotalElements();
         int totalPages = page.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalItems", totalItems);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("transactions", transactions);
 
-        return "/transfer";
+        List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                .boxed()
+                .collect(Collectors.toList());
+
+        mav.addObject("pageNumbers", pageNumbers);
+        mav.addObject("currentPage", currentPage);
+        mav.addObject("totalItems", totalItems);
+        mav.addObject("totalPages", totalPages);
+        mav.addObject("transactions", transactions);
+
+        return mav;
     }
 
 
 
     @PostMapping("/transfer/fromBank")
-    public String receiveFromBank(@ModelAttribute("bankDto") BankDto bankDto) {
+    public ModelAndView receiveFromBank(@ModelAttribute("bankDto") BankDto bankDto) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("bankDto", new BankDto());
+        mav.setViewName("redirect:/transfer");
         transactionService.deposit(bankDto);
 
-        log.info("request post receiveFromBank into Transaction controller");
-        return "redirect:/transfer";
+        log.info("request post receiveFromBank");
+        return mav;
     }
 
 
     @PostMapping("/transfer/toBank")
-    public String sendToBank(@ModelAttribute ("bankDto") BankDto bankDto) {
+    public ModelAndView sendToBank(@ModelAttribute ("bankDto") BankDto bankDto) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("bankDto", new BankDto());
+        mav.setViewName("redirect:/transfer");
         transactionService.withdraw(bankDto);
 
-        log.info("request post sendToBank into Transaction controller");
-        return "redirect:/transfer";
+        log.info("request post sendToBank");
+        return mav;
     }
 
 
     @PostMapping("/transfer/toBuddy")
-    public String sendToBuddy(@ModelAttribute ("transaction") TransactionDto transactionDto) {
+    public ModelAndView sendToBuddy(@ModelAttribute ("transaction") TransactionDto transactionDto) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("transactionDto", new TransactionDto());
+        mav.setViewName("redirect:/transfer");
         transactionService.makeTransaction(transactionDto);
 
-        log.info("request post sendToBuddy into Transaction controller");
-        return "redirect:/transfer";
+        log.info("request post sendToBuddy");
+        return mav;
     }
 
 }

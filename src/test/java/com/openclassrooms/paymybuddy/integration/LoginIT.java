@@ -70,9 +70,9 @@ public class LoginIT {
     }
 
 
-    @Test
-    @WithAnonymousUser
-    void createNewUserIT() throws Exception {
+//    @Test
+//    @WithAnonymousUser
+//    void createNewUserIT() throws Exception {
 //        this.mockMvc.perform(post("/register"))
 //                .andExpect(status().isCreated())
 //                .andExpect(model().attribute("successMessage", "User has been registered successfully"))
@@ -86,7 +86,7 @@ public class LoginIT {
 //                        .with(csrf())
 //                        .param("action", "signup"))
 //                .andExpect(status().isOk());
-    }
+//    }
 
 
 

@@ -11,8 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ProfileController {
@@ -43,49 +43,73 @@ public class ProfileController {
     }
 
 
+
     @GetMapping("/profile")
-    public String viewProfile(Model model) {
+    public ModelAndView viewProfile() {
 
         User loggedUser = userService.getPrincipal();
-        model.addAttribute("bankName", loggedUser.getBankName());
-        model.addAttribute("accountNumber", loggedUser.getAccountNumber());
-        model.addAttribute("contacts", loggedUser.getContacts());
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("profile");
+        mav.addObject("bankName", loggedUser.getBankName());
+        mav.addObject("accountNumber", loggedUser.getAccountNumber());
+        mav.addObject("contacts", loggedUser.getContacts());
 
-        log.info("request get into profile controller");
-        return "profile";
+        log.info("request get profile");
+        return mav;
     }
+
+
 
     @PostMapping("/profile/addAccount")
-    public String addAccount(@ModelAttribute ("accountDto") AccountDto accountDto) {
+    public ModelAndView addAccount(@ModelAttribute ("accountDto") AccountDto accountDto) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("accountDto", new AccountDto());
+        mav.setViewName("redirect:/profile");
         accountService.addBankAccount(accountDto);
 
-        log.info("request post addAccount into profile controller");
-        return "redirect:/profile";
+        log.info("returning register view");
+        return mav;
     }
+
+
 
     @DeleteMapping("/profile/deleteAccount")
-    public String deleteAccount() {
+    public ModelAndView deleteAccount() {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("redirect:/profile");
         accountService.deleteBankAccount();
 
-        log.info("request post deleteAccount into profile controller");
-        return "redirect:/profile";
+        log.info("request post deleteAccount");
+        return mav;
     }
+
+
 
     @PostMapping("/profile/addContact")
-    public String addContact(@ModelAttribute ("contactDto") ContactDto contactDto) {
+    public ModelAndView addContact(@ModelAttribute ("contactDto") ContactDto contactDto) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("contactDto", new ContactDto());
+        mav.setViewName("redirect:/profile");
         contactService.addContact(contactDto);
 
-        log.info("request post addContact into profile controller");
-        return "redirect:/profile";
+        log.info("request post addContact");
+        return mav;
     }
+
+
+
 
     @DeleteMapping("/profile/deleteContact/{email}")
-    public String deleteContact(@PathVariable String email) {
+    public ModelAndView deleteContact(@PathVariable String email) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("redirect:/profile");
         contactService.deleteContact(email);
 
-        log.info("request post deleteContact into profile controller");
-        return "redirect:/profile";
+        log.info("request post deleteContact");
+        return mav;
     }
-
-
 }

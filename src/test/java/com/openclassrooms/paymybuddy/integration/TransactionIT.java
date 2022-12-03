@@ -1,6 +1,7 @@
 package com.openclassrooms.paymybuddy.integration;
 
 import com.openclassrooms.paymybuddy.controller.TransactionController;
+import com.openclassrooms.paymybuddy.dto.BankDto;
 import com.openclassrooms.paymybuddy.service.TransactionService;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -73,9 +77,13 @@ public class TransactionIT {
 //    @Test
 //    void receiveFromBankIT() throws Exception {
 //
-//        doNothing().when(transactionService).deposit(any());
+////        doNothing().when(transactionService).deposit(any());
 //
-//        this.mockMvc.perform(post("/transfer/fromBank").with(user("test@paymybuddy.com")))
+//        BankDto bankDto = new BankDto();
+//        bankDto.setAmount(BigDecimal.valueOf(100.00));
+//
+//        this.mockMvc.perform(post("/transfer/fromBank").param(String.valueOf(bankDto))
+//                        .with(user("test@paymybuddy.com")))
 //                .andExpect(status().isOk())
 //                .andExpect(model().size(2))
 //                .andExpect(authenticated())
@@ -100,8 +108,8 @@ public class TransactionIT {
 //                .andExpect(view().name("redirect:/transfer"))
 //                .andReturn();
 //    }
-////
-////
+//
+//
 //    @Test
 //    void sendToBuddyIT() throws Exception {
 //

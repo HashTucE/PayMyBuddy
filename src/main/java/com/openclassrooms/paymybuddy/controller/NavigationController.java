@@ -26,7 +26,7 @@ public class NavigationController {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("home");
-        mav.addObject("principal", userService.getPrincipal().getEmail());
+        mav.addObject("principal", loggedUser.getEmail());
         mav.addObject("balance", loggedUser.getBalance());
         mav.addObject("bankName", loggedUser.getBankName());
         mav.addObject("accountNumber", loggedUser.getAccountNumber());

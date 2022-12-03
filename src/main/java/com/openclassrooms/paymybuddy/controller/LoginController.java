@@ -28,6 +28,7 @@ public class LoginController {
 
     @GetMapping({"/", "/login"})
     public ModelAndView viewlogin(){
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
 
@@ -39,6 +40,7 @@ public class LoginController {
 
     @GetMapping("/register")
     public ModelAndView viewRegister(){
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("userDto", new UserDto());
         modelAndView.setViewName("register");
@@ -51,6 +53,7 @@ public class LoginController {
 
     @PostMapping("/register")
     public ModelAndView createNewUser(@Valid UserDto userDto, BindingResult bindingResult) {
+
         ModelAndView modelAndView = new ModelAndView();
         User userExists = userService.findByEmail(userDto.getEmail());
         if (userExists != null) {
@@ -65,7 +68,6 @@ public class LoginController {
             modelAndView.addObject("successMessage", "User has been registered successfully");
             modelAndView.addObject("user", new User());
             modelAndView.setViewName("register");
-
         }
         log.info("request post createNewUser into login controller");
         return modelAndView;

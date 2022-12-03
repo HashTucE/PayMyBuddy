@@ -153,25 +153,24 @@ class UserServiceTest {
 
 
 
-    @Test
-    @WithMockUser(username = "test@test.fr", password = "pass", roles = "USER")
-    @DisplayName("Should return the logged user")
-    void getPrincipalPositiveTest() {
-
-        SecurityContext securityContext = new SecurityContextImpl();
-        securityContext.setAuthentication(new TestingAuthenticationToken("test@test.fr",null));
-        SecurityContextHolder.setContext(securityContext);
-
-        //given
-//        Object userObject = new User("test@test.fr", "pass");
-//        User user = new User("test@test.fr", "pass");
+//    @Test
+//    @WithMockUser(username = "user@test.fr")
+//    @DisplayName("Should return the logged user")
+//    void getPrincipalPositiveTest() {
+//
+//        SecurityContext securityContext = new SecurityContextImpl();
+//        securityContext.setAuthentication(new TestingAuthenticationToken("user@test.fr", "pass", "ROLE_USER"));
+//        SecurityContextHolder.setContext(securityContext);
+//
+//        //given
+//        String expected = "user@test.fr";
 //
 //        //when
 //        User principal = userService.getPrincipal();
 //
 //        //then
-//        assertEquals(user.getEmail(), principal.getEmail());
-    }
+//        assertEquals(expected, principal.getEmail());
+//    }
 
 
 }
