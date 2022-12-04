@@ -129,6 +129,7 @@ public class UserService {
             username = ((UserDetails) principal).getUsername();
         } else {
             username = principal.toString();
+            System.out.println("///" + username);
         }
         User principalUser = findByEmail(username);
 

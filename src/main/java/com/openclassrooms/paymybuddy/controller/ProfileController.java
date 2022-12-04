@@ -102,8 +102,8 @@ public class ProfileController {
 
 
 
-    @DeleteMapping("/profile/deleteContact/{email}")
-    public ModelAndView deleteContact(@PathVariable String email) {
+    @DeleteMapping("/profile/deleteContact")
+    public ModelAndView deleteContact(String email) {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("redirect:/profile");

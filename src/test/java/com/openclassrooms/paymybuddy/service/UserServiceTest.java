@@ -30,8 +30,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @MockBean
-    private TransactionRepository transactionRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -153,24 +151,26 @@ class UserServiceTest {
 
 
 
-//    @Test
+    @Test
 //    @WithMockUser(username = "user@test.fr")
-//    @DisplayName("Should return the logged user")
-//    void getPrincipalPositiveTest() {
-//
-//        SecurityContext securityContext = new SecurityContextImpl();
-//        securityContext.setAuthentication(new TestingAuthenticationToken("user@test.fr", "pass", "ROLE_USER"));
-//        SecurityContextHolder.setContext(securityContext);
-//
-//        //given
-//        String expected = "user@test.fr";
-//
-//        //when
-//        User principal = userService.getPrincipal();
-//
-//        //then
-//        assertEquals(expected, principal.getEmail());
-//    }
+    @DisplayName("Should return the logged user")
+    void getPrincipalPositiveTest() {
+
+        //given
+        SecurityContext securityContext = new SecurityContextImpl();
+        securityContext.setAuthentication(new TestingAuthenticationToken("user@test.fr", "pass", "ROLE_USER"));
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User("user@test.fr", "pass");
+        String expected = "user@test.fr";
+
+        //when
+        when(userRepository.findByEmail(anyString())).thenReturn(user);
+        User actual = userService.getPrincipal();
+
+        //then
+        assertEquals(expected, actual.getEmail());
+    }
 
 
 }

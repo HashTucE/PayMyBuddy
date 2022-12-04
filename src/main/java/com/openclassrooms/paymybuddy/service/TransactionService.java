@@ -73,20 +73,6 @@ public class TransactionService {
 
             if (loggedUser.getBalance().compareTo(amountTaxIncl) >= 0) {
 
-                loggedUser.setBalance(loggedUser.getBalance().subtract(amountTaxIncl));
-                userRepository.save(loggedUser);
-                log.info("Amount of " + amountTaxIncl + " subtract from " + loggedUser.getEmail());
-
-                beneficiary.setBalance(beneficiary.getBalance().add(amount));
-                userRepository.save(beneficiary);
-                log.info("Amount of " + amount + " added to " + beneficiary.getEmail());
-
-
-                payMyBuddy.setBalance(payMyBuddy.getBalance().add(tax));
-                userRepository.save(payMyBuddy);
-                log.info("Amount of " + tax + " added to " + payMyBuddy.getEmail());
-
-
                 Transaction transaction = new Transaction();
                 Date date = new Date();
                 date.setTime(System.currentTimeMillis());
@@ -98,18 +84,23 @@ public class TransactionService {
                 transactionRepository.save(transaction);
                 log.info("Transaction from " + transaction.getDate() + " save in DB");
 
+                loggedUser.setBalance(loggedUser.getBalance().subtract(amountTaxIncl));
+                log.info("Amount of " + amountTaxIncl + " subtract from " + loggedUser.getEmail());
                 loggedUser.getDebitList().add(transaction);
-                userRepository.save(loggedUser);
                 log.info("Transaction from " + transaction.getDate() + " save in debit's list of " + loggedUser.getEmail());
+                userRepository.save(loggedUser);
 
+                beneficiary.setBalance(beneficiary.getBalance().add(amount));
+                log.info("Amount of " + amount + " added to " + beneficiary.getEmail());
                 beneficiary.getCreditList().add(transaction);
-                userRepository.save(beneficiary);
                 log.info("Transaction from " + transaction.getDate() + " save in credit's list of " + beneficiary.getEmail());
+                userRepository.save(beneficiary);
 
+                payMyBuddy.setBalance(payMyBuddy.getBalance().add(tax));
+                log.info("Amount of " + tax + " added to " + payMyBuddy.getEmail());
                 payMyBuddy.getCreditList().add(transaction);
-                userRepository.save(payMyBuddy);
                 log.info("Transaction from " + transaction.getDate() + " save in debit's list of " + payMyBuddy.getEmail());
-
+                userRepository.save(payMyBuddy);
             }
             else {
                 log.error(loggedUser.getEmail() + " does not have sufficient funds to carry out the transaction");

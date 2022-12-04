@@ -1,30 +1,24 @@
 package com.openclassrooms.paymybuddy.integration;
 
-import com.openclassrooms.paymybuddy.controller.TransactionController;
 import com.openclassrooms.paymybuddy.dto.BankDto;
+import com.openclassrooms.paymybuddy.dto.TransactionDto;
 import com.openclassrooms.paymybuddy.service.TransactionService;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.math.BigDecimal;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class TransactionIT {
 
 
@@ -36,18 +30,10 @@ public class TransactionIT {
 
 
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new TransactionController()).build();
-    }
-
-
-
-
-
     @Test
+    @WithMockUser(username = "test@paymybuddy.com")
     void viewTransferIT() throws Exception {
-        this.mockMvc.perform(get("/transfer").with(user("test@paymybuddy.com")))
+        mockMvc.perform(get("/transfer"))
                 .andExpect(status().isFound())
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/transfer/page/1"))
@@ -57,71 +43,55 @@ public class TransactionIT {
 
 
 
+    @Test
+    @WithMockUser(username = "test@paymybuddy.com")
+    void receiveFromBankIT() throws Exception {
 
-//    @Test
-//    void getOnePageIT() throws Exception {
-//        this.mockMvc.perform(get("/transfer/page/{pageNumber}").with(user("test@paymybuddy.com")))
-//                .andExpect(status().isOk())
-//                .andExpect(authenticated())
-//                .andExpect(model().attributeExists("contacts"))
-//                .andExpect(model().attributeExists("balance"))
-//                .andExpect(model().attributeExists("currentPage"))
-//                .andExpect(model().attributeExists("totalItems"))
-//                .andExpect(model().attributeExists("totalPages"))
-//                .andExpect(model().attributeExists("transactions"))
-//                .andExpect(view().name("transfer"))
-//                .andReturn();
-//    }
-//
-//
-//    @Test
-//    void receiveFromBankIT() throws Exception {
-//
-////        doNothing().when(transactionService).deposit(any());
-//
-//        BankDto bankDto = new BankDto();
-//        bankDto.setAmount(BigDecimal.valueOf(100.00));
-//
-//        this.mockMvc.perform(post("/transfer/fromBank").param(String.valueOf(bankDto))
-//                        .with(user("test@paymybuddy.com")))
-//                .andExpect(status().isOk())
-//                .andExpect(model().size(2))
-//                .andExpect(authenticated())
-//                .andExpect(model().attributeExists("bankDto", "transactionDto"))
-//                .andExpect(redirectedUrl("/transfer"))
-//                .andExpect(view().name("redirect:/transfer"))
-//                .andReturn();
-//    }
-//
-//
-//    @Test
-//    void sendToBankIT() throws Exception {
-//
-//        doNothing().when(transactionService).withdraw(any());
-//
-//        this.mockMvc.perform(post("/transfer/toBank").with(user("test@paymybuddy.com")))
-//                .andExpect(status().isOk())
-//                .andExpect(model().size(2))
-//                .andExpect(authenticated())
-//                .andExpect(model().attributeExists("bankDto", "transactionDto"))
-//                .andExpect(redirectedUrl("/transfer"))
-//                .andExpect(view().name("redirect:/transfer"))
-//                .andReturn();
-//    }
-//
-//
-//    @Test
-//    void sendToBuddyIT() throws Exception {
-//
-//        doNothing().when(transactionService).makeTransaction(any());
-//
-//        this.mockMvc.perform(post("/transfer/toBuddy").with(user("test@paymybuddy.com")))
-//                .andExpect(status().isFound())
-//                .andExpect(model().size(3))
-//                .andExpect(authenticated())
-//                .andExpect(model().attributeExists("transaction", "transactionDto"))
-//                .andExpect(redirectedUrl("/transfer"))
-//                .andExpect(view().name("redirect:/transfer"))
-//                .andReturn();
-//    }
+        mockMvc.perform(post("/transfer/fromBank")
+                        .sessionAttr("bankDTO", new BankDto())
+                        .param("amount", String.valueOf(BigDecimal.valueOf(100))))
+                .andExpect(status().isFound())
+                .andExpect(model().size(1))
+                .andExpect(authenticated())
+                .andExpect(model().attributeExists("bankDto"))
+                .andExpect(redirectedUrl("/transfer"))
+                .andExpect(view().name("redirect:/transfer"))
+                .andReturn();
+    }
+
+
+    @Test
+    @WithMockUser(username = "test@paymybuddy.com")
+    void sendToBankIT() throws Exception {
+
+        mockMvc.perform(post("/transfer/toBank")
+                        .sessionAttr("bankDTO", new BankDto())
+                        .param("amount", String.valueOf(BigDecimal.valueOf(100))))
+                .andExpect(status().isFound())
+                .andExpect(model().size(1))
+                .andExpect(authenticated())
+                .andExpect(model().attributeExists("bankDto"))
+                .andExpect(redirectedUrl("/transfer"))
+                .andExpect(view().name("redirect:/transfer"))
+                .andReturn();
+    }
+
+
+    @Test
+    @WithMockUser(username = "test@paymybuddy.com")
+    void sendToBuddyIT() throws Exception {
+
+        mockMvc.perform(post("/transfer/toBuddy")
+                        .sessionAttr("transactionDTO", new TransactionDto())
+                        .param("email", "test2@paymybuddy.com")
+                        .param("amount", String.valueOf(BigDecimal.valueOf(100)))
+                        .param("description", "desc"))
+                .andExpect(status().isFound())
+                .andExpect(model().size(1))
+                .andExpect(authenticated())
+                .andExpect(model().attributeExists("transactionDto"))
+                .andExpect(redirectedUrl("/transfer"))
+                .andExpect(view().name("redirect:/transfer"))
+                .andReturn();
+    }
 }
