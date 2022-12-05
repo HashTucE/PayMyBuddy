@@ -55,7 +55,9 @@ https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Dat
 ![Capture d’écran 2022-12-04 à 22 03 23](https://user-images.githubusercontent.com/95872501/205518878-9e83a3ed-3eb0-497f-84fb-25448d5f70a5.png)
 
 # Technology Stack
-![Capture d’écran 2022-12-05 à 00 50 28](https://user-images.githubusercontent.com/95872501/205523477-188d3a52-188e-4eb0-b8aa-7d3914ec8420.png)
+![Capture d’écran 2022-12-05 à 01 19 56](https://user-images.githubusercontent.com/95872501/205524881-6a809029-414e-4a1f-b339-15154421f01a.png)
+
+
 
 
 
