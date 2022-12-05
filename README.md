@@ -26,7 +26,14 @@ These features are not fonctionals :
 
 - Install [MySQL](https://dev.mysql.com/downloads/mysql/)
 
-- Open a command prompt, start MySQL server and copy/paste scripts :
+- Open a command prompt to start MySQL server :
+  - Enter this command replacing the `???` by your username : 
+    ```
+    mysql -u ??? -p
+    ```
+  - Type your password and press `enter` to start the server.
+  
+- Copy/paste SQL scripts :
 
   - Use this [script](https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Schema.sql) to create the datatbase.
 
