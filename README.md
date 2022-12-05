@@ -30,18 +30,22 @@ https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Sch
 
 - And finally use this script to create some users, relations and transactions for test :
 https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Data.sql
-- Then to sign in with any of these account, use the password '&&'.
-- For this first release all commisions are collected by 'bill@paymybuddy.com'.
-- I recommend to use first the account of 'test@paymybuddy.com' because he is concern by all transactions.
+- Then to sign in with any of these account, use the password `&&`.
+- For this first release all commisions are collected by `bill@paymybuddy.com`.
+- I recommend to use first the account of `test@paymybuddy.com` because he is concern by all transactions.
 
 # Run the Application
 
-- The datasource is set to this url : spring.datasource.url=jdbc:mysql://localhost:3306/paymybuddy?serverTimezone=UTC
-- If needed you can check properties to : src/main/resources/application.properties
+- The datasource is set to `src/main/resources/application.properties` : 
+```
+spring.datasource.url=jdbc:mysql://localhost:3306/paymybuddy?serverTimezone=UTC
+```
 
 - Open a command prompt and run the following command : 
-- mvn spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.username=??? --spring.datasource.password=!!!"
-- Replacing ??? by your username and !!! by your password of your datasource.
+```
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.username=??? --spring.datasource.password=???"
+```
+- Replacing ??? by your username and your password of datasource.
 - And finally open your browser to access to this URL : http://localhost:8080/
 - Then you can create a new account or use an existing from data script, ENJOY !
 
