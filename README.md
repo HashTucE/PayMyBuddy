@@ -15,6 +15,7 @@ Webapp for Money Transfer with the following features :
 These features are not fonctionals :
 - Remember me at sign in
 - Forgot Password
+- Contact us
 
 # Prerequisites
 - Java 11
@@ -23,16 +24,18 @@ These features are not fonctionals :
 
 # Prepare the Database
 
-- Install MySQL
+- Install [MySQL](https://dev.mysql.com/downloads/mysql/)
 
-- Then use this script to create the datatbase :
-https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Schema.sql
+- Open a command prompt, start MySQL server and copy/paste scripts :
 
-- And finally use this script to create some users, relations and transactions for test :
-https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Data.sql
-- Then to sign in with any of these account, use the password `&&`.
-- For this first release all commisions are collected by `bill@paymybuddy.com`.
-- I recommend to use first the account of `test@paymybuddy.com` because he is concern by all transactions.
+  - Use this [script](https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Schema.sql) to create the datatbase.
+
+  - Use this [script](https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Data.sql) to create some users, relations and transactions for test.
+
+- Additional informations :
+  - Then to sign in with any of these accounts, use the password `&&`.
+  - For this first release all commisions are collected by `bill@paymybuddy.com`.
+  - I recommend to use first the account of `test@paymybuddy.com` because it is concern by all transactions.
 
 # Run the Application
 
@@ -41,11 +44,10 @@ https://github.com/HashTucE/PayMyBuddy/blob/main/src/main/resources/database/Dat
 spring.datasource.url=jdbc:mysql://localhost:3306/paymybuddy?serverTimezone=UTC
 ```
 
-- Open a command prompt and run the following command : 
+- Open a command prompt, once located to the root of the project, run the following command replacing `???` by your username and your password of datasource : 
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.username=??? --spring.datasource.password=???"
 ```
-- Replacing ??? by your username and your password of datasource.
 - And finally open your browser to access to this URL : http://localhost:8080/
 - Then you can create a new account or use an existing from data script, ENJOY !
 
