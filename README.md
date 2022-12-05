@@ -57,6 +57,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.username=??
 ```
 - And finally open your browser to access to this URL : http://localhost:8080/
 - Then you can create a new account or use an existing from data script, ENJOY !
+- Stop the application in the command prompt with : `CTRL + C`
 
 # UML Diagram
 ![Bayeul_Jérémy_1_uml_112022](https://user-images.githubusercontent.com/95872501/205518856-93160098-b087-46ea-92e5-0cf84c86704a.png)
