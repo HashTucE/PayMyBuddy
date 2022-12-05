@@ -1,5 +1,6 @@
 package com.openclassrooms.paymybuddy.entity;
 
+import com.openclassrooms.paymybuddy.configuration.Generated;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -173,32 +174,37 @@ public class User implements UserDetails {
 
 
 
-
+    @Generated
     @Override
     public String getPassword() {
         return password;
     }
 
+    @Generated
     @Override
     public String getUsername() {
         return null;
     }
 
+    @Generated
     @Override
     public boolean isAccountNonExpired() {
         return false;
     }
 
+    @Generated
     @Override
     public boolean isAccountNonLocked() {
         return false;
     }
 
+    @Generated
     @Override
     public boolean isCredentialsNonExpired() {
         return false;
     }
 
+    @Generated
     @Override
     public boolean isEnabled() {
         return false;
